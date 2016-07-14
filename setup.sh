@@ -80,14 +80,14 @@ changePostgres(){
         cat >$tmpfile << EOF
 echo "alter user postgres with password '$PG_PASS';"|psql -d postgres -U postgres
 EOF
-        chmod u+x $tmpfile
+        chmod 777 $tmpfile
         su - postgres -c $tmpfile
         rm $tmpfile
         
         if [ -f ~/.pgpass ]; then
                 cat ~/.pgpass |grep -v localhost > /tmp/zz
         else
-                rm /tmp/zz
+                rm -f /tmp/zz
                 touch /tmp/zz
         fi
         echo "localhost:*:*:postgres:$pass" >> /tmp/zz
