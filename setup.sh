@@ -70,24 +70,20 @@ changePostgres(){
             echo "Please run as root"
             exit
         fi
-#        env
-        #if [ ! -f ~/.setup.pass ]; then
-        if [ ! -s ~/.setup.pass ]; then
-                strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'>~/.setup.pass
-        fi
-        read pass < ~/.setup.pass
-           echo "PW: $pass" 
 
-        if [[ ! $pass = *[!\ ]* ]]; then
+        if [[ ! $PG_PASS = *[!\ ]* ]]; then
            echo "blank password"
            exit
         fi
-        echo "psql -d postgres -U postgres<< EOF" > /tmp/pg.sh
-        echo "alter user postgres with password '$pass';" >> /tmp/pg.sh
-        echo "EOF">>/tmp/pg.sh
-        chmod u+x /tmp/pg.sh
-        su - postgres -c /tmp/pg.sh
-
+        tmpfile=$(mktemp /tmp/pg_pass.XXXXXX)
+        
+        cat >$tmpfile << EOF
+echo "alter user postgres with password '$PG_PASS';"|psql -d postgres -U postgres
+EOF
+        chmod u+x $tmpfile
+        su - postgres -c $tmpfile
+        rm $tmpfile
+        
         if [ -f ~/.pgpass ]; then
                 cat ~/.pgpass |grep -v localhost > /tmp/zz
         else
@@ -100,6 +96,7 @@ changePostgres(){
         chmod 0600 ~/.pgpass
         chown $SUDO_USER ~/.pgpass
 }
+
 autoSSH(){
         if [ "$(id -u)" != "0" ]; then
                 if [ ! -f ~/.ssh/id_rsa.pub ]; then
@@ -141,11 +138,16 @@ stepConfigure(){
             echo "do not run as root"
             exit
         fi
-
         read -e -p "Enter server: " -i "$PREFIX" PREFIX
-
+        
         echo "PREFIX=$PREFIX" > ~/env.sh
         echo "export PREFIX" >> ~/env.sh
+        
+        read -e -p "Postgress Password: " -i "$PG_PASS" PREFIX
+        
+        echo "PG_PASS=$PG_PASS" > ~/env.sh
+        echo "export PG_PASS" >> ~/env.sh
+        
         chmod 700 ~/env.sh
 }
 
