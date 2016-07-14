@@ -317,7 +317,7 @@ menu() {
 
         title="Install"
         prompt="Pick an option:"
-        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Upgrade @sudo" "fetch Installer" "InstallST" "Allow Hosts @sudo")
+        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Upgrade @sudo" "fetch Installer" "InstallST" "Allow Hosts")
 
         echo "$title"
         PS3="$prompt "
