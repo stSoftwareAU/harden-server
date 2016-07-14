@@ -291,17 +291,20 @@ defaults() {
         fi
 }
 allowHosts(){
+        sudo << EOF
 cat /etc/hosts.allow | egrep -v "(192\.168\.7\.|\#ST)" >/tmp/hosts.allow
 echo "sshd: 192.168.7.      #Local " >> /tmp/hosts.allow
 echo "sshd: 60.241.239.222  #ST Office iinet" >> /tmp/hosts.allow
 echo "sshd: 58.108.224.217  #ST Office optus" >> /tmp/hosts.allow
 echo "sshd: 101.0.96.194    #ST www1"
 echo "sshd: 101.0.106.2     #ST www2"
-cp /tmp/hosts.allow /etc/hosts.allow
-
+sudo cp /tmp/hosts.allow /etc/hosts.allow
+sudo rm /tmp/hosts.allow
 cat /etc/hosts.deny | egrep -v "sshd" >/tmp/hosts.deny
 echo "sshd: ALL" >> /tmp/hosts.deny
-cp /tmp/hosts.deny /etc/hosts.deny
+sudo cp /tmp/hosts.deny /etc/hosts.deny
+sudo rm /tmp/hosts.deny
+EOF
 }
 
 menu() {
