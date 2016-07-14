@@ -139,7 +139,7 @@ stepConfigure(){
             exit
         fi
         read -e -p "Enter server: " -i "$PREFIX" PREFIX
-        read -e -p "Postgress Password: " -i "$PG_PASS" PREFIX
+        read -e -p "Postgress Password: " -i "$PG_PASS" PG_PASS
         
         cat > ~/env.sh << EOF
 PREFIX=$PREFIX
