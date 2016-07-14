@@ -115,7 +115,6 @@ autoSSH(){
            echo "Must NOT be run as root" 
         fi
 }
-
 stepGroups() {
         addGroup 'sts';
         addGroup 'www-data';
@@ -291,12 +290,22 @@ defaults() {
            PREFIX="jt"
         fi
 }
+allowHosts(){
+cat /etc/hosts.allow | egrep -v "(192\.|203\.206\.176\.223|)" >/tmp/hosts.allow
+echo "sshd: 192.168." >> /tmp/hosts.allow
+echo "sshd: 203.206.176.223" >> /tmp/hosts.allow
+cp /tmp/hosts.allow /etc/hosts.allow
+
+cat /etc/hosts.deny | egrep -v "sshd" >/tmp/hosts.deny
+echo "sshd: ALL" >> /tmp/hosts.deny
+cp /tmp/hosts.deny /etc/hosts.deny
+}
 
 menu() {
 
         title="Install"
         prompt="Pick an option:"
-        options=( "Configure" "Create groups @sudo" "#Create users @sudo" "Install packages @sudo" "#Change Postgress PW" "SSH auto login" "#Upgrade" "fetch Installer" "#InstallST")
+        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Upgrade @sudo" "fetch Installer" "InstallST" "Allow Hosts @sudo")
 
         echo "$title"
         PS3="$prompt "
@@ -313,6 +322,7 @@ menu() {
                     7 ) upgrade;;
                     8 ) fetchInstaller;;
                     9 ) installST;;
+                    10) allowHosts;;
 
                     *) echo "Invalid option. ";continue;;
 
@@ -324,3 +334,4 @@ menu() {
 defaults;
 
 menu;
+
