@@ -320,7 +320,7 @@ EOF
 firewall() {
         sudo ufw disable
         sudo ufw allow ssh
-        sudo ufw allow imap
+        #sudo ufw allow imap
         sudo ufw allow http
         sudo ufw allow https
         if [[ $WWW1_IP = *[!\ ]* ]]; then
