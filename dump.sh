@@ -2,7 +2,7 @@
 cd
 DAILY=dumps/`date +%a`
 mkdir -p $DAILY
-MONTHLY=/home/postgres/backups/`date +%b`
+MONTHLY=dumps/`date +%b`
 mkdir -p $MONTHLY
 LIST=$(psql -tqc 'SELECT datname FROM pg_database where datistemplate = false;')
 start_date=$(date +%Y%m%d-%T)
