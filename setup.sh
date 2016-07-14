@@ -90,11 +90,11 @@ EOF
                 rm -f /tmp/zz
                 touch /tmp/zz
         fi
-        echo "localhost:*:*:postgres:$pass" >> /tmp/zz
+        echo "localhost:*:*:postgres:$PG_PASS" >> /tmp/zz
 
         mv /tmp/zz ~/.pgpass
         chmod 0600 ~/.pgpass
-        chown $SUDO_USER ~/.pgpass
+        chown $SUDO_USER:$SUDO_USER ~/.pgpass
 }
 
 autoSSH(){
