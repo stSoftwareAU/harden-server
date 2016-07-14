@@ -38,14 +38,8 @@ upgrade() {
 
 installPackages() {
         add-apt-repository ppa:webupd8team/java
+        apt-get update;
         apt-get install fail2ban openssh-server apache2 libapache2-mod-jk oracle-java8-installer postfix postgresql htop aspell
-        update;
-        ufw allow ssh
-        ufw allow imap
-        ufw allow http
-        ufw allow https
-        ufw disable
-        ufw enable
         a2enmod ssl
 
 }
@@ -140,10 +134,18 @@ stepConfigure(){
         fi
         read -e -p "Enter server: " -i "$PREFIX" PREFIX
         read -e -p "Postgress Password: " -i "$PG_PASS" PG_PASS
+        read -e -p "www1 IP: " -i "$WWW1_IP" WWW1_IP
+        read -e -p "www2 IP: " -i "$WWW2_IP" WWW2_IP
         
         cat > ~/env.sh << EOF
 PREFIX=$PREFIX
 export PREFIX
+
+WWW1_IP=$WWW1_IP
+export WWW1_IP
+
+WWW2_IP=$WWW2_IP
+export WWW2_IP
 
 PG_PASS=$PG_PASS
 export PG_PASS
@@ -315,11 +317,26 @@ EOF
         rm $tmpfile
 }
 
+firewall() {
+        sudo ufw disable
+        sudo ufw allow ssh
+        sudo ufw allow imap
+        sudo ufw allow http
+        sudo ufw allow https
+        if [[ $WWW1_IP = *[!\ ]* ]]; then
+                sudo ufw allow from $WWW1_IP to any port 5432
+        fi
+        if [[ $WWW2_IP = *[!\ ]* ]]; then
+                sudo ufw allow from $WWW2_IP to any port 5432
+        fi
+        sudo ufw enable
+}
+
 menu() {
 
         title="Install"
         prompt="Pick an option:"
-        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Upgrade @sudo" "fetch Installer" "InstallST" "Allow Hosts")
+        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Upgrade @sudo" "fetch Installer" "InstallST" "Allow Hosts" "Firewall @sudo")
 
         echo "$title"
         PS3="$prompt "
@@ -337,6 +354,7 @@ menu() {
                     8 ) fetchInstaller;;
                     9 ) installST;;
                     10) allowHosts;;
+                    11) firewall;;
 
                     *) echo "Invalid option. ";continue;;
 
