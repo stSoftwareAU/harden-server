@@ -340,11 +340,30 @@ firewall() {
         sudo ufw enable
 }
 
+setupApache() {
+        tmpfile=$(mktemp /tmp/allow-script.XXXXXX)
+        
+        cat >$tmpfile << EOF
+cp /etc/apache2/mods-enabled/ssl.conf /tmp/ssl.conf
+sed 's/SSLCipherSuite .*/SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS"
+/g' /tmp/ssl.conf
+sed 's/[ #]+SSLHonorCipherOrder .*/ 	SSLHonorCipherOrder on/g' /tmp/ssl.conf
+sed 's/[ #]+SSLProtocol .*/ 	SSLProtocol all -SSLv3 -SSLv2/g' /tmp/ssl.conf
+sed 's/[ #]+SSLStrictSNIVHostCheck .*/ 	SSLStrictSNIVHostCheck On/g' /tmp/ssl.conf
+
+rm /etc/apache2/mods-enabled/ssl.conf
+cp /tmp/ssl.conf /etc/apache2/mods-enabled/ssl.conf
+EOF
+        chmod 777 $tmpfile
+        sudo $tmpfile
+        rm $tmpfile
+}
+
 menu() {
 
-        title="Install"
+        title="Server Hardene"
         prompt="Pick an option:"
-        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Update OS" "fetch Installer" "InstallST" "Allow Hosts" "Firewall @sudo")
+        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Update OS" "fetch Installer" "InstallST" "Allow Hosts" "Firewall @sudo" "Apache")
 
         echo "$title"
         PS3="$prompt "
@@ -363,6 +382,7 @@ menu() {
                     9 ) installST;;
                     10) allowHosts;;
                     11) firewall;;
+                    12) setupApache;;
 
                     *) echo "Invalid option. ";continue;;
 
