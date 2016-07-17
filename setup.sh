@@ -20,19 +20,21 @@ addUser( ) {
             useradd -g www-data -m -s /bin/bash $1
         fi
 }
-upgrade() {
-        if (( $EUID != 0 )); then
-            echo "Please run as root"
-            exit
-        fi
-
-        apt-get update
-        apt-get upgrade -y
-        apt-get autoclean
-        apt-get dist-upgrade
-        apt-get check
-        apt-get autoremove
-        update-grub
+updateOS() {
+        tmpfile=$(mktemp /tmp/pg_pass.XXXXXX)
+        
+        cat >$tmpfile << EOF
+apt-get update
+apt-get upgrade -y
+apt-get autoclean
+apt-get dist-upgrade
+apt-get check
+apt-get autoremove
+update-grub
+EOF
+        chmod 777 $tmpfile
+        sudo  $tmpfile
+        rm $tmpfile
 
 }
 
@@ -342,7 +344,7 @@ menu() {
 
         title="Install"
         prompt="Pick an option:"
-        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Upgrade @sudo" "fetch Installer" "InstallST" "Allow Hosts" "Firewall @sudo")
+        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages @sudo" "Change Postgress PW @sudo" "SSH auto login" "Update OS" "fetch Installer" "InstallST" "Allow Hosts" "Firewall @sudo")
 
         echo "$title"
         PS3="$prompt "
@@ -356,7 +358,7 @@ menu() {
                     4 ) installPackages;;
                     5 ) changePostgres;;
                     6 ) autoSSH;;
-                    7 ) upgrade;;
+                    7 ) updateOS;;
                     8 ) fetchInstaller;;
                     9 ) installST;;
                     10) allowHosts;;
