@@ -31,4 +31,14 @@ chmod -R go-wrx /home/webapps/apache
 
 if [ ! -f /opt/letsencrypt ]; then
   git clone https://github.com/letsencrypt/letsencrypt /opt/letsencrypt
+else
+  cd /opt/letsencrypt
+  git pull
+fi
+
+crontab -l > /tmp/crontab.txt
+if ! grep -q 'letsencrypt-auto' /tmp/crontab.txt ; then
+  grep -v "letsencrypt-auto" /tmp/crontab.txt > /tmp/crontab2.txt
+  echo "30 2 * * 1 /opt/letsencrypt/letsencrypt-auto renew >> /var/log/le-renew.log" >> /tmp/crontab2.txt
+  crontab < /tmp/crontab2.txt
 fi
