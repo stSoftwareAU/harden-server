@@ -39,10 +39,18 @@ EOF
 }
 
 installPackages() {
-        add-apt-repository ppa:webupd8team/java
-        apt-get update;
-        apt-get install fail2ban openssh-server apache2 libapache2-mod-jk oracle-java8-installer postfix postgresql htop aspell git lynx
-        a2enmod ssl
+        tmpfile=$(mktemp /tmp/install.XXXXXX)
+        
+        cat >$tmpfile << EOF
+add-apt-repository ppa:webupd8team/java
+apt-get update;
+apt-get install fail2ban openssh-server apache2 libapache2-mod-jk oracle-java8-installer postfix postgresql htop aspell git
+apt-get install lynx
+a2enmod ssl
+EOF
+        chmod 777 $tmpfile
+        sudo $tmpfile
+        rm $tmpfile
 }
 
 formatDisk(){
