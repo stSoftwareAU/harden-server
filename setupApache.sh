@@ -29,7 +29,7 @@ fi
 chown -R webapps:www-data /home/webapps/apache
 chmod -R go-wrx /home/webapps/apache
 
-if [ ! -f /opt/letsencrypt ]; then
+if [ ! -d /opt/letsencrypt ]; then
   git clone https://github.com/letsencrypt/letsencrypt /opt/letsencrypt
 else
   cd /opt/letsencrypt
