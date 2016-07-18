@@ -341,22 +341,11 @@ firewall() {
 }
 
 setupApache() {
-        tmpfile=$(mktemp /tmp/allow-script.XXXXXX)
-        
-        cat >$tmpfile << EOF
-cp /etc/apache2/mods-enabled/ssl.conf /tmp/ssl.conf
-sed 's/SSLCipherSuite .*/SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS"
-/g' /tmp/ssl.conf
-sed 's/[ #]+SSLHonorCipherOrder .*/ 	SSLHonorCipherOrder on/g' /tmp/ssl.conf
-sed 's/[ #]+SSLProtocol .*/ 	SSLProtocol all -SSLv3 -SSLv2/g' /tmp/ssl.conf
-sed 's/[ #]+SSLStrictSNIVHostCheck .*/ 	SSLStrictSNIVHostCheck On/g' /tmp/ssl.conf
-
-rm /etc/apache2/mods-enabled/ssl.conf
-cp /tmp/ssl.conf /etc/apache2/mods-enabled/ssl.conf
-EOF
-        chmod 777 $tmpfile
-        sudo $tmpfile
-        rm $tmpfile
+        cd /tmp
+        rm setupApache.sh
+        wget https://github.com/stSoftwareAU/harden-server/raw/master/setupApache.sh
+        chmod 777 setupApache.sh
+        sudo ./setupApache.sh
 }
 
 menu() {
