@@ -41,7 +41,7 @@ EOF
 installPackages() {
         add-apt-repository ppa:webupd8team/java
         apt-get update;
-        apt-get install fail2ban openssh-server apache2 libapache2-mod-jk oracle-java8-installer postfix postgresql htop aspell git
+        apt-get install fail2ban openssh-server apache2 libapache2-mod-jk oracle-java8-installer postfix postgresql htop aspell git lynx
         a2enmod ssl
 }
 
