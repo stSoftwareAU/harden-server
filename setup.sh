@@ -260,9 +260,19 @@ EOF
 
         if [ ! -f /etc/init.d/stSoftware ]; then
             cat << EOF > /etc/init.d/stSoftware
-#!/bin/sh
-# stSoftware init script
-#. /lib/lsb/init-functions
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          stSoftware init script
+# Required-Start:    apache2
+# Required-Stop:     
+# Should-Start:      networking
+# Should-stop:
+# Default-Start:     
+# Default-Stop:
+# X-Interactive:     
+# Short-Description: start the stSoftware servers.
+### END INIT INFO
+
 start() {
     (sleep 60 && sudo -u webapps -i /home/webapps/start.sh ) > /var/log/stSoftware.log 2>&1 &
 }
