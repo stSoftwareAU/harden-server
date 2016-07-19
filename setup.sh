@@ -332,7 +332,7 @@ EOF
         rm $tmpfile
 }
 
-firewall() {
+setupFirewall() {
         sudo ufw disable
         sudo ufw allow ssh
         #sudo ufw allow imap
@@ -340,9 +340,11 @@ firewall() {
         sudo ufw allow https
         if [[ $WWW1_IP = *[!\ ]* ]]; then
                 sudo ufw allow from $WWW1_IP to any port 5432
+                sudo ufw allow from $WWW1_IP to any port 61616
         fi
         if [[ $WWW2_IP = *[!\ ]* ]]; then
                 sudo ufw allow from $WWW2_IP to any port 5432
+                sudo ufw allow from $WWW2_IP to any port 61616
         fi
         sudo ufw enable
 }
@@ -359,7 +361,7 @@ menu() {
 
         title="Server Hardene"
         prompt="Pick an option:"
-        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS" "fetch Installer" "InstallST" "Allow Hosts" "Firewall @sudo" "Apache")
+        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS" "fetch Installer" "InstallST" "Allow Hosts" "Firewall" "Apache")
 
         echo "$title"
         PS3="$prompt "
@@ -377,7 +379,7 @@ menu() {
                     8 ) fetchInstaller;;
                     9 ) installST;;
                     10) allowHosts;;
-                    11) firewall;;
+                    11) setupFirewall;;
                     12) setupApache;;
 
                     *) echo "Invalid option. ";continue;;
