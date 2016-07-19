@@ -339,11 +339,19 @@ setupFirewall() {
         sudo ufw allow http
         sudo ufw allow https
         if [[ $WWW1_IP = *[!\ ]* ]]; then
+                # Postgres
                 sudo ufw allow from $WWW1_IP to any port 5432
+                # Tomcat ajp13
+                sudo ufw allow from $WWW1_IP to any port 8009
+                # JMS
                 sudo ufw allow from $WWW1_IP to any port 61616
         fi
         if [[ $WWW2_IP = *[!\ ]* ]]; then
+                # Postgres
                 sudo ufw allow from $WWW2_IP to any port 5432
+                # Tomcat ajp13
+                sudo ufw allow from $WWW2_IP to any port 8009
+                # JMS
                 sudo ufw allow from $WWW2_IP to any port 61616
         fi
         sudo ufw enable
