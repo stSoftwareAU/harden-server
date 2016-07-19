@@ -168,8 +168,8 @@ installST(){
             echo "Please run as root"
             exit
         fi
-        sed --in-place='.bak' -r 's/^[\t #]+workers.tomcat_home=.*$/workers.tomcat_home=\/home\/webapps\/${PREFIX}Server\/server\//g' /etc/libapache2-mod-jk/workers.properties
 
+        sed --in-place='.bak' -r 's/^[\t #]*workers.tomcat_home=.*$/workers.tomcat_home=\/home\/webapps\/${PREFIX}Server\/server\//g' /etc/libapache2-mod-jk/workers.properties
 
         cat << EOF1 > /home/webapps/install.sh
 #!/bin/bash
