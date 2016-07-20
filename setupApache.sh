@@ -5,9 +5,10 @@ sed --in-place='.bak' -r 's/^[\t #]+SSLProtocol .*$/     SSLProtocol all -SSLv3 
 sed --in-place='.bak' -r 's/^[\t #]+SSLStrictSNIVHostCheck .*$/     SSLStrictSNIVHostCheck On/g' /tmp/ssl.conf
 
 rm /etc/apache2/mods-enabled/ssl.conf
+cp /tmp/ssl.conf /etc/apache2/mods-available/
+ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/
+
 mkdir -p /home/webapps/apache
-cp /tmp/ssl.conf /home/webapps/apache/
-ln -s /home/webapps/apache/ssl.conf /etc/apache2/mods-enabled/
 
 if [ ! -f /home/webapps/apache/000-default.conf ]; then
   cp /etc/apache2/sites-enabled/000-default.conf /home/webapps/apache/
