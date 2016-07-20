@@ -231,10 +231,8 @@ mkdir -p /tmp/${PREFIX}Server/cache
 ln -s /tmp/${PREFIX}Server/cache cache
 cp -an docs/* /tmp/${PREFIX}Server/cache
 
-
-if [ ! -L ~/${PREFIX}Server/logs ]; then
-  ln -s ~/logs ~/${PREFIX}Server/logs
-fi
+rm -rf ~/${PREFIX}Server/logs
+ln -s ~/logs ~/${PREFIX}Server/logs
 
 ulimit -n 4000
 
