@@ -48,7 +48,7 @@ fi
 crontab -l > /tmp/crontab.txt
 if ! grep -q '/home/webapps/letsencrypt' /tmp/crontab.txt ; then
   grep -v "letsencrypt-auto" /tmp/crontab.txt > /tmp/crontab2.txt
-  echo "45 * * * * rsync -rlptu --del --backup --backup-dir=/home/webapps/backups /etc/letsencrypt/ /home/webapps/letsencrypt;chown -r webapps /home/webapps/letsencrypt" >>/tmp/crontab2.txt
+  echo "45 * * * * rsync -rlptu --del --backup --backup-dir=/home/webapps/backups /etc/letsencrypt/ /home/webapps/letsencrypt;chown -R webapps /home/webapps/letsencrypt" >>/tmp/crontab2.txt
   echo "55 * * * * rsync -rlptu --del /home/webapps/letsencrypt /etc/letsencrypt/" >> /tmp/crontab2.txt
   crontab < /tmp/crontab2.txt
 fi
