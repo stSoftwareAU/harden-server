@@ -220,7 +220,8 @@ EOF2
         if [ ! -f /home/webapps/start.sh ]; then
             cat << EOF > /home/webapps/start.sh
 #!/bin/bash
-
+cd 
+mkdir -p logs
 ~/stop.sh
 
 cd ~/${PREFIX}Server
