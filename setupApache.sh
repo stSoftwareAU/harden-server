@@ -31,11 +31,12 @@ fi
 chown -R webapps:www-data /home/webapps/apache
 chmod -R go-wrx /home/webapps/apache
 
-if [ ! -d /opt/letsencrypt ]; then
-  git clone https://github.com/letsencrypt/letsencrypt /opt/letsencrypt
-else
-  cd /opt/letsencrypt
-  git pull
+
+if [ ! -f /usr/bin/letsencrypt ]; then
+  sudo apt-get install python-letsencrypt-apache 
+#else
+#  cd /opt/letsencrypt
+#  git pull
 fi
 
 crontab -l > /tmp/crontab.txt
