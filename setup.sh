@@ -21,6 +21,13 @@ addUser( ) {
         fi
 }
 updateOS() {
+        cd /tmp
+        rm -p setup.sh
+        wget https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/setup.sh
+        cp setup.sh ~/
+        cd 
+        chmod u+x setup.sh
+        
         tmpfile=$(mktemp /tmp/pg_pass.XXXXXX)
         
         cat >$tmpfile << EOF
