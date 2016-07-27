@@ -14,11 +14,11 @@ addUser( ) {
 
 fetchFiles() {
         cd /tmp
-        rm acme_tiny.py
+        rm -f acme_tiny.py
         wget https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py
-        
-        cp acme_tiny.py /home/lersencrypt/
-        chown letsencrypt:letsencrypt /home/lersencrypt/acme_tiny.py
+
+        cp acme_tiny.py /home/letsencrypt/
+        chown letsencrypt:www-data /home/letsencrypt/acme_tiny.py
 }
 
 addUser;
