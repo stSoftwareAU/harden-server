@@ -31,24 +31,4 @@ fi
 chown -R webapps:www-data /home/webapps/apache
 chmod -R go-wrx /home/webapps/apache
 
-
-if [ ! -f /usr/bin/letsencrypt ]; then
-  sudo apt-get install python-letsencrypt-apache 
-else
-  cd /opt/letsencrypt
-  git pull
-fi
-
-crontab -l > /tmp/crontab.txt
-if ! grep -q 'letsencrypt-auto' /tmp/crontab.txt ; then
-  grep -v "letsencrypt-auto" /tmp/crontab.txt > /tmp/crontab2.txt
-  echo "30 2 * * 1 /opt/letsencrypt/letsencrypt-auto renew >> /var/log/le-renew.log" >> /tmp/crontab2.txt
-  crontab < /tmp/crontab2.txt
-fi
-crontab -l > /tmp/crontab.txt
-if ! grep -q '/home/webapps/letsencrypt' /tmp/crontab.txt ; then
-  grep -v "letsencrypt-auto" /tmp/crontab.txt > /tmp/crontab2.txt
-  echo "45 * * * * rsync -rlptu /etc/letsencrypt/ /home/webapps/letsencrypt;chown -R webapps /home/webapps/letsencrypt" >>/tmp/crontab2.txt
-  echo "55 * * * * rsync -rlptu --del /home/webapps/letsencrypt /etc/letsencrypt/" >> /tmp/crontab2.txt
-  crontab < /tmp/crontab2.txt
-fi
+echo "Alias /.well-known/acme-challenge/ /home/letsencrypt/challenges/"
