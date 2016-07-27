@@ -25,6 +25,7 @@ generateKeys(){
    cd /home/letsencrypt
    mkdir -p keys
    mkdir -p csr
+   mkdir -p certs
    if [ ! -f keys/account.key ]; then
        openssl genrsa 4096 > keys/account.key
    fi
