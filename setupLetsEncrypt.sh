@@ -21,5 +21,5 @@ fetchFiles() {
         chown letsencrypt:letsencrypt /home/lersencrypt/acme_tiny.py
 }
 
-addUser();
-fetchFiles();
+addUser()
+fetchFiles()
