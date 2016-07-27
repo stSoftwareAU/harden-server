@@ -23,13 +23,14 @@ fetchFiles() {
 
 generateKeys(){
    cd /home/letsencrypt
-
-   if [ ! -f account.key ]; then
-       openssl genrsa 4096 > account.key
+   mkdir -p keys
+   mkdir -p csr
+   if [ ! -f keys/account.key ]; then
+       openssl genrsa 4096 > keys/account.key
    fi
-   if [ ! -f domain.key ]; then
+   if [ ! -f keys/domain.key ]; then
         #generate a domain private key (if you haven't already)
-        openssl genrsa 4096 > domain.key
+        openssl genrsa 4096 > keys/domain.key
    fi
 
    if [ ! -d challenges ]; then
@@ -37,8 +38,10 @@ generateKeys(){
         mkdir -p challenges
    fi
 
-   if [ ! -f lets-encrypt-x3-cross-signed.pem ]; then
+   if [ ! -f keys/lets-encrypt-x3-cross-signed.pem ]; then
+        cd keys
         wget -N https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
+        cd ..
    fi
    chown -R letsencrypt:www-data /home/letsencrypt/
    chmod 600 /home/letsencrypt/*key
