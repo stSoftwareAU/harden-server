@@ -376,11 +376,18 @@ setupApache() {
         sudo ./setupApache.sh
 }
 
+setupLetsEncrypt() {
+        cd /tmp
+        rm setupLetsEncrypt.sh
+        wget https://github.com/stSoftwareAU/harden-server/raw/master/setupLetsEncrypt.sh
+        chmod 777 setupLetsEncrypt.sh
+        sudo ./setupLetsEncrypt.sh
+}
 menu() {
 
         title="Server Hardene"
         prompt="Pick an option:"
-        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS" "fetch Installer" "InstallST" "Allow Hosts" "Firewall" "Apache")
+        options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS" "fetch Installer" "InstallST" "Allow Hosts" "Firewall" "Apache" "Lets Encrypt")
 
         echo "$title"
         PS3="$prompt "
@@ -400,6 +407,7 @@ menu() {
                     10) allowHosts;;
                     11) setupFirewall;;
                     12) setupApache;;
+                    13) setupLetsEncrypt;;
 
                     *) echo "Invalid option. ";continue;;
 
