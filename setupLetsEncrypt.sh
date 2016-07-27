@@ -44,7 +44,7 @@ generateKeys(){
         cd ..
    fi
    chown -R letsencrypt:www-data /home/letsencrypt/
-   chmod 600 /home/letsencrypt/*key
+   chmod 600 /home/letsencrypt/keys/*
    chmod -R go-xrw /home/letsencrypt/
 }
 
