@@ -74,7 +74,7 @@ generateKeys(){
    fi
    chown -R letsencrypt:www-data /home/letsencrypt/
    chmod 600 /home/letsencrypt/keys/*
-   chmod -R go-xrw /home/letsencrypt/
+   chmod -R o-xrw /home/letsencrypt/
 }
 
 setupApache(){
