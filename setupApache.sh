@@ -32,7 +32,7 @@ if [ ! -f /home/webapps/apache/workers.properties ]; then
   ln -s /home/webapps/apache/workers.properties /etc/libapache2-mod-jk/
 fi
 chown -R webapps:www-data /home/webapps/apache
-chmod -R go-wrx /home/webapps/apache
+chmod -R go-wrx /home/webapps/apache
 
 cat /etc/apache2/sites-enabled/000-default.conf |grep -v "well-known/acme-challenge" > /tmp/000-default.conf
 
