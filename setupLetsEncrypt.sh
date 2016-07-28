@@ -13,12 +13,40 @@ addUser( ) {
 }
 
 fetchFiles() {
-        cd /tmp
-        rm -f acme_tiny.py
-        wget https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py
+        cd /home/letsencrypt/
+        wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py > acme_tiny.py
 
-        cp acme_tiny.py /home/letsencrypt/
-        chown letsencrypt:www-data /home/letsencrypt/acme_tiny.py
+        chown letsencrypt:www-data acme_tiny.py
+
+   if [ ! -f sync.sh ]; then
+        #make some challenge folder
+        echo "#!/bin/bash" > sync.sh
+        echo "" >> sync.sh
+        echo "#rsync -rtpqu keys www2:" >> sync.sh
+        echo "#rsync -rtpqu challenges www2:" >> sync.sh
+        chmod 700 sync.sh
+   fi
+
+   if [ ! -f domains.txt ]; then
+        touch domains.txt
+        chmod 600 domains.txt
+   fi
+
+   if [ ! -f run.sh ]; then
+        cat > run.sh << EOF
+#!/bin/bash
+set -e 
+domains=`cat domains.txt`
+for domain in $domains
+do
+    echo "\${domain}"
+done
+./sync.sh
+EOF
+   fi
+
+   chmod 700 run.sh
+   chown letsencrypt:www-data run.sh
 }
 
 generateKeys(){
