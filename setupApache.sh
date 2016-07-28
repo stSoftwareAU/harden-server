@@ -38,3 +38,5 @@ cat /etc/apache2/sites-enabled/000-default.conf |grep -v "well-known/acme-challe
 
 echo "Alias /.well-known/acme-challenge/ /home/letsencrypt/challenges/" > /etc/apache2/sites-enabled/000-default.conf
 cat /tmp/000-default.conf >> /etc/apache2/sites-enabled/000-default.conf
+
+/etc/init.d/apache2 restart
