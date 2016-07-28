@@ -79,11 +79,11 @@ generateKeys(){
 
 setupApache(){
 
- if grep -q "well-known/acme-challenge" /etc/apache2/sites-enabled/000-default.conf; then
- else
+ if ! grep -q "well-known/acme-challenge" /etc/apache2/sites-enabled/000-default.conf; then
+ 
   cat > /tmp/000-default.conf << EOF
-  Alias /.well-known/acme-challenge/ /home/letsencrypt/challenges/
-  <Directory /home/letsencrypt/challenges>
+Alias /.well-known/acme-challenge/ /home/letsencrypt/challenges/
+<Directory /home/letsencrypt/challenges>
    AllowOverride None
    Require all granted
    Satisfy Any
