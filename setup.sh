@@ -22,7 +22,7 @@ addUser( ) {
 }
 updateOS() {
         cd 
-        rm -f setup.sh
+        
         wget -O - https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/setup.sh > setup.sh
 
         chmod u+x setup.sh
