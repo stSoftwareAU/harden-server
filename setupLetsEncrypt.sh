@@ -77,6 +77,25 @@ generateKeys(){
    chmod -R go-xrw /home/letsencrypt/
 }
 
+setupApache(){
+
+ if grep -q "well-known/acme-challenge" /etc/apache2/sites-enabled/000-default.conf; then
+ else
+  cat > /tmp/000-default.conf << EOF
+  Alias /.well-known/acme-challenge/ /home/letsencrypt/challenges/
+  <Directory /home/letsencrypt/challenges>
+   AllowOverride None
+   Require all granted
+   Satisfy Any
+</Directory>
+EOF
+   cat /etc/apache2/sites-enabled/000-default.conf >> /tmp/000-default.conf
+  fi
+
+  /etc/init.d/apache2 restart        
+}
+
 addUser;
 fetchFiles;
 generateKeys;
+setupApache;
