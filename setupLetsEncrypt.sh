@@ -133,6 +133,9 @@ EOF
 }
 
 setupCron(){
+        
+        rm -f /tmp/crontab.txt
+        
         tmpfile=$(mktemp /tmp/letsencrypt_cron.XXXXXX)
         
         cat >$tmpfile << EOF
@@ -149,6 +152,7 @@ EOF
         sudo -u letsencrypt $tmpfile
         rm $tmpfile
         
+        rm -f /tmp/crontab.txt
         tmpfile=$(mktemp /tmp/apache_cron.XXXXXX)
         
         cat >$tmpfile << EOF2
@@ -164,6 +168,7 @@ EOF2
         
    $tmpfile    
    rm $tmpfile
+   rm -f /tmp/crontab.txt
 }
 addUser;
 fetchFiles;
