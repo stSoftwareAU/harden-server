@@ -53,7 +53,7 @@ acme_tiny (){
 }
 
 cd
-domains=`cat domains.txt`
+domains=\`cat domains.txt\`
 rm -f challenges/*
 
 for domain in \$domains
