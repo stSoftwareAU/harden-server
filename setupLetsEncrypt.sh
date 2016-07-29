@@ -112,6 +112,7 @@ generateKeys(){
    chown -R letsencrypt:www-data /home/letsencrypt/
    chmod 600 /home/letsencrypt/keys/*
    chmod -R o-xrw /home/letsencrypt/
+   chmod ugo+rx /home/letsencrypt/challenges
 }
 
 setupApache(){
