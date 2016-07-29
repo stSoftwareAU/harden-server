@@ -35,12 +35,47 @@ fetchFiles() {
    if [ ! -f run.sh ]; then
         cat > run.sh << EOF
 #!/bin/bash
-set -e 
+set -e
+acme_tiny (){
+
+    rm -f /tmp/acme.crt
+    set +e
+    python acme_tiny.py --account-key keys/account.key --csr $CSR --acme-dir challenges > /tmp/acme.crt
+
+    set -e
+    if [ -s /tmp/acme.crt ]; then
+       mv /tmp/acme.crt $CRT
+    else
+       echo "could not create cert for ${domain}"
+    fi
+}
+
+cd
 domains=`cat domains.txt`
+rm -f challenges/*
+
 for domain in $domains
 do
-    echo "\${domain}"
+    CSR=csr/${domain}.csr
+    if [ ! -f $CSR ]; then
+       echo "create a certificate signing request (CSR) for: ${domain}"
+       openssl req -new -sha256 -key keys/domain.key -subj "/CN=${domain}" > $CSR
+
+    fi
+
+    CRT=certs/${domain}.crt
+    if [ ! -f $CRT ]; then
+       echo "create cert for: ${domain}"
+       acme_tiny
+    else
+        if test `find "$CRT" -mtime 30`
+        then
+            echo "renew cert for: ${domain}"
+            acme_tiny
+        fi
+    fi
 done
+
 ./sync.sh
 EOF
    fi
