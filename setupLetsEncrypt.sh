@@ -132,7 +132,24 @@ EOF
   /etc/init.d/apache2 restart        
 }
 
+setupCron(){
+        tmpfile=$(mktemp /tmp/cron.XXXXXX)
+        
+        cat >$tmpfile << EOF
+#!/bin/bash
+set -e        
+crontab -l > /tmp/crontab.txt
+if ! grep -q "/home/letsencrypt/run.sh" /tmp/crontab.txt; then
+     echo "0 2 * * 7 sleep ${RANDOM:0:2}m ; /home/letsencrypt/run.sh > /home/letsencrypt/run.log" >> /tmp/crontab.txt
+     crontab < /tmp/crontab.txt
+fi
+EOF
+        chmod 777 $tmpfile
+        
+        sudo -u letsencrypt $tmpfile
+}
 addUser;
 fetchFiles;
 generateKeys;
 setupApache;
+setupCron;
