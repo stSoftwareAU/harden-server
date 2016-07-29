@@ -140,10 +140,11 @@ setupCron(){
         
         cat >$tmpfile << EOF
 #!/bin/bash
-set -e        
+set +e        
 crontab -l > /tmp/crontab.txt
+set -e
 if ! grep -q "/home/letsencrypt/run.sh" /tmp/crontab.txt; then
-     echo "0 2 * * 7 sleep ${RANDOM:0:2}m ; /home/letsencrypt/run.sh > /home/letsencrypt/run.log" >> /tmp/crontab.txt
+     echo "0 2 * * 7 sleep \${RANDOM:0:2}m ; /home/letsencrypt/run.sh > /home/letsencrypt/run.log" >> /tmp/crontab.txt
      crontab < /tmp/crontab.txt
 fi
 EOF
@@ -157,8 +158,9 @@ EOF
         
         cat >$tmpfile << EOF2
 #!/bin/bash
-set -e        
+set +e        
 crontab -l > /tmp/crontab.txt
+set -e
 if ! grep -q "/etc/init.d/apache2" /tmp/crontab.txt; then
      echo "0 5 * * 7 /etc/init.d/apache2 reload >/dev/null" >> /tmp/crontab.txt
      crontab < /tmp/crontab.txt
