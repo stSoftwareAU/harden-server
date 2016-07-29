@@ -22,8 +22,10 @@ fetchFiles() {
         #make some challenge folder
         echo "#!/bin/bash" > sync.sh
         echo "" >> sync.sh
-        echo "#rsync -rtpqu keys www2:" >> sync.sh
+        echo "#rsync -rtpqu certs www2:" >> sync.sh
         echo "#rsync -rtpqu challenges www2:" >> sync.sh
+        echo "#rsync -rtpqu csr www2:" >> sync.sh
+        echo "#rsync -rtpqu keys www2:" >> sync.sh
         chmod 700 sync.sh
    fi
 
