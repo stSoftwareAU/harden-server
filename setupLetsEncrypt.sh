@@ -90,7 +90,8 @@ Alias /.well-known/acme-challenge/ /home/letsencrypt/challenges/
 </Directory>
 EOF
    cat /etc/apache2/sites-enabled/000-default.conf >> /tmp/000-default.conf
-   cp /tmp/000-default.conf /etc/apache2/sites-enabled/000-default.conf 
+   sed 's/JkMount \/\* \(.*\)/&\n\    JkUnMount \/.well-known\/acme-challenge\/\* \1/' /tmp/000-default.conf >/tmp/000-default.conf2
+   cp /tmp/000-default.conf2 /etc/apache2/sites-enabled/000-default.conf 
   fi
 
   /etc/init.d/apache2 restart        
