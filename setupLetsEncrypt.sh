@@ -42,13 +42,13 @@ acme_tiny (){
 
     rm -f /tmp/acme.crt
     set +e
-    python acme_tiny.py --account-key keys/account.key --csr $CSR --acme-dir challenges > /tmp/acme.crt
+    python acme_tiny.py --account-key keys/account.key --csr \$CSR --acme-dir challenges > /tmp/acme.crt
 
     set -e
     if [ -s /tmp/acme.crt ]; then
-       mv /tmp/acme.crt $CRT
+       mv /tmp/acme.crt \$CRT
     else
-       echo "could not create cert for ${domain}"
+       echo "could not create cert for \${domain}"
     fi
 }
 
@@ -56,23 +56,23 @@ cd
 domains=`cat domains.txt`
 rm -f challenges/*
 
-for domain in $domains
+for domain in \$domains
 do
-    CSR=csr/${domain}.csr
-    if [ ! -f $CSR ]; then
-       echo "create a certificate signing request (CSR) for: ${domain}"
-       openssl req -new -sha256 -key keys/domain.key -subj "/CN=${domain}" > $CSR
+    CSR=csr/\${domain}.csr
+    if [ ! -f \$CSR ]; then
+       echo "create a certificate signing request (CSR) for: \${domain}"
+       openssl req -new -sha256 -key keys/domain.key -subj "/CN=\${domain}" > \$CSR
 
     fi
 
-    CRT=certs/${domain}.crt
-    if [ ! -f $CRT ]; then
-       echo "create cert for: ${domain}"
+    CRT=certs/\${domain}.crt
+    if [ ! -f \$CRT ]; then
+       echo "create cert for: \${domain}"
        acme_tiny
     else
-        if test `find "$CRT" -mtime 30`
+        if test `find "\$CRT" -mtime 30`
         then
-            echo "renew cert for: ${domain}"
+            echo "renew cert for: \${domain}"
             acme_tiny
         fi
     fi
