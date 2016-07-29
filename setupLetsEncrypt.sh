@@ -144,7 +144,7 @@ set +e
 crontab -l > /tmp/crontab.txt
 set -e
 if ! grep -q "/home/letsencrypt/run.sh" /tmp/crontab.txt; then
-     echo "0 2 * * 7 sleep \${RANDOM:0:2}m ; /home/letsencrypt/run.sh > /home/letsencrypt/run.log" >> /tmp/crontab.txt
+     echo "0 2 * * 7 sleep \\\${RANDOM:0:2}m ; /home/letsencrypt/run.sh > /home/letsencrypt/run.log" >> /tmp/crontab.txt
      crontab < /tmp/crontab.txt
 fi
 EOF
