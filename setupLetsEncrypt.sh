@@ -133,7 +133,7 @@ EOF
 }
 
 setupCron(){
-        tmpfile=$(mktemp /tmp/cron.XXXXXX)
+        tmpfile=$(mktemp /tmp/letsencrypt_cron.XXXXXX)
         
         cat >$tmpfile << EOF
 #!/bin/bash
@@ -147,6 +147,23 @@ EOF
         chmod 777 $tmpfile
         
         sudo -u letsencrypt $tmpfile
+        rm $tmpfile
+        
+        tmpfile=$(mktemp /tmp/apache_cron.XXXXXX)
+        
+        cat >$tmpfile << EOF2
+#!/bin/bash
+set -e        
+crontab -l > /tmp/crontab.txt
+if ! grep -q "/etc/init.d/apache2" /tmp/crontab.txt; then
+     echo "0 5 * * 7 /etc/init.d/apache2 reload >/dev/null" >> /tmp/crontab.txt
+     crontab < /tmp/crontab.txt
+fi
+EOF2
+   chmod 777 $tmpfile
+        
+   $tmpfile    
+   rm $tmpfile
 }
 addUser;
 fetchFiles;
