@@ -34,5 +34,5 @@ fi
 chown -R webapps:www-data /home/webapps/apache
 chmod -R go-wrx /home/webapps/apache
 a2enmod headers
-
+a2enmod ssl
 /etc/init.d/apache2 restart
