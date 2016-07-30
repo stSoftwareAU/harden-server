@@ -34,9 +34,11 @@ if [ ! -f /home/webapps/apache/000-default.conf ]; then
   ln -s /home/webapps/apache/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 fi
 
-if ! grep -q "wellset Strict-Transport-Security" /etc/apache2/sites-enabled/000-default.conf; then
-    echo "@TODO add to /etc/apache2/sites-enabled/000-default.conf"
+if ! grep -q "Header .* Strict-Transport-Security" /etc/apache2/sites-enabled/000-default.conf; then
+    echo "@TODO sudo vi /etc/apache2/sites-enabled/000-default.conf"
+    echo ""
     echo "Header always set Strict-Transport-Security \"max-age=31536000\""
+    echo ""
 fi 
 
 if [ ! -f /home/webapps/apache/httpd-jk.conf ]; then
