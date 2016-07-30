@@ -18,8 +18,8 @@ echo "SSLOpenSSLConfCmd Curves secp384r1" >> /tmp/ssl.conf3
 echo "</IfModule>" >> /tmp/ssl.conf3
 
 rm /etc/apache2/mods-enabled/ssl.conf
-cp /tmp/ssl.conf3 /home/webapps/apache/ssl.conf
-ln -s /home/webapps/apache/ssl.conf /etc/apache2/mods-enabled/
+cp /tmp/ssl.conf3 /etc/apache2/mods-available/ssl.conf
+ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/
 
 if [ ! -f /home/webapps/apache/000-default.conf ]; then
   cp /etc/apache2/sites-enabled/000-default.conf /home/webapps/apache/
