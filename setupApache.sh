@@ -33,5 +33,6 @@ if [ ! -f /home/webapps/apache/workers.properties ]; then
 fi
 chown -R webapps:www-data /home/webapps/apache
 chmod -R go-wrx /home/webapps/apache
+a2enmod headers
 
 /etc/init.d/apache2 restart
