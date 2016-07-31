@@ -143,7 +143,7 @@ monitorSites(){
 ### END INIT INFO
 
 relink(){
-    rm /etc/apache2/sites-enabled/100-*
+    rm -f /etc/apache2/sites-enabled/100-*
     for f in /home/letsencrypt/sites/100-*; 
     do 
        ln -s $f /etc/apache2/sites-enabled/ 
