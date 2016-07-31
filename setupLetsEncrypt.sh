@@ -146,7 +146,7 @@ relink(){
     rm -f /etc/apache2/sites-enabled/100-*
     for f in /home/letsencrypt/sites/100-*; 
     do 
-       ln -s $f /etc/apache2/sites-enabled/ 
+       ln -s \$f /etc/apache2/sites-enabled/ 
     done
     
     /etc/init.d/apache2 reload
@@ -157,7 +157,8 @@ start() {
 }
 
 stop() {
-    kill `ps -ef |grep stMonitorSites|grep -v grep |grep monitor| cut -c 10-15` > /dev/null 2>&1
+    PRG=\$1
+    kill `ps -ef |grep \$PRG|grep -v grep |grep -v stop| cut -c 10-15` > /dev/null 2>&1
 }
 
 monitor() {
@@ -167,7 +168,7 @@ monitor() {
        relink();
     done
 }
-case "$1" in 
+case "\$1" in 
     monitor)
        monitor
        ;;
@@ -175,7 +176,7 @@ case "$1" in
        start
        ;;
     stop)
-       stop
+       stop \$0
        ;;
     restart)
        stop
@@ -185,7 +186,7 @@ case "$1" in
        echo "status was called"
        ;;
     *)
-       echo "Usage: $0 {start|stop|status|restart}"
+   echo "Usage: \$0 {start|stop|status|restart}"
 esac
 exit 0 
 EOF
