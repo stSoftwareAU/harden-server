@@ -142,7 +142,7 @@ monitorSites(){
 # Short-Description: start the stSoftware servers.
 ### END INIT INFO
 set -e
-PRG=\$0
+PRG=stMonitorSites
 
 relink() {
     rm -f /etc/apache2/sites-enabled/100-*
@@ -173,11 +173,11 @@ monitor() {
         mkdir -p /home/letsencrypt/sites
         chown letsencrypt:www-data /home/letsencrypt/sites
     fi
-    inotifywait -m -e modify -e create -e delete -q /home/letsencrypt/sites/ | while read site
-
-    do
-       echo "Changed: \$site"
-       relink
+    while true #run indefinitely
+    do 
+        inotifywait -r -e modify,close_write,create,delete /home/letsencrypt/sites
+        sleep 5
+        relink
     done
 }
 case "\$1" in 
