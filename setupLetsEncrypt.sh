@@ -129,6 +129,8 @@ installPackages(){
         apt-get install inotify-tools
    fi
 }
+
+installPackages;
 addUser;
 fetchFiles;
 generateKeys;
