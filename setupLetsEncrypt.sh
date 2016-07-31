@@ -173,7 +173,7 @@ monitor() {
         mkdir -p /home/letsencrypt/sites
         chown letsencrypt:www-data /home/letsencrypt/sites
     fi
-    inotifywait -m -q /home/letsencrypt/sites/ | while read site
+    inotifywait -m -e modify -e create -e delete -q /home/letsencrypt/sites/ | while read site
 
     do
        echo "Changed: \$site"
