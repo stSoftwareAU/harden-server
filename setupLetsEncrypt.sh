@@ -123,6 +123,12 @@ EOF2
    rm $tmpfile
    rm -f /tmp/crontab.txt
 }
+
+installPackages(){
+   if ! which inotifywait > /dev/null; then
+        apt-get install inotify-tools
+   fi
+}
 addUser;
 fetchFiles;
 generateKeys;
