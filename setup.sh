@@ -179,31 +179,32 @@ installST(){
 
         cat << EOF1 > /home/webapps/install.sh
 #!/bin/bash
+set -e
 cd 
 java -jar /tmp/${PREFIX}Installer.jar
-if [ \$? != 0 ]; then
-    echo 'installer failed' 1>&2
-    exit 1
-fi
+
 tmp=\`ls -d ${PREFIX}Server20* |sort -r| head -1\`
 today=\`expr "\$tmp" : '^[a-zA-Z]*\([0-9]*\)'\`
 
 mkdir -p cache 
 mkdir -p logs 
 
-rm -fr ${PREFIX}Server\$today/logs
+if [ -f ${PREFIX}Server\$today/logs ]; then
+    rm -fr ${PREFIX}Server\$today/logs
+fi
+
 ln -s ~/logs ${PREFIX}Server\$today/logs 
+cd ${PREFIX}Server\$today
+java -jar launcher.jar download
+cd
 
 if [ -s ${PREFIX}Server ]; then
-cd ${PREFIX}Server$today
-java -jar launcher.jar configure
-if [ \$? != 0 ]; then
-    echo 'configure failed' 1>&2
-    exit 1
-fi
+    cd ${PREFIX}Server\$today
+    java -jar launcher.jar configure
+    cd
+    rm ${PREFIX}Server
 fi
 
-rm ${PREFIX}Server
 ln -s ${PREFIX}Server\$today ${PREFIX}Server
 EOF1
 
