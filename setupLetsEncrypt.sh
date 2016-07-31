@@ -142,7 +142,7 @@ monitorSites(){
 # Short-Description: start the stSoftware servers.
 ### END INIT INFO
 set -e
-PRG=$0
+PRG=\$0
 
 relink() {
     rm -f /etc/apache2/sites-enabled/100-*
