@@ -191,8 +191,10 @@ case "\$1" in
 esac
 exit 0 
 EOF
+    chmod u+x /etc/init.d/stMonitorSites
     rm -f /etc/rc3.d/*stMonitorSites
     ln -s /etc/init.d/stMonitorSites /etc/rc3.d/S99-stMonitorSites
+    
     /etc/init.d/stMonitorSites restart
 }
 
