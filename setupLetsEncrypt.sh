@@ -142,7 +142,7 @@ monitorSites(){
 # Short-Description: start the stSoftware servers.
 ### END INIT INFO
 
-relink(){
+relink() {
     rm -f /etc/apache2/sites-enabled/100-*
     for f in /home/letsencrypt/sites/100-*; 
     do 
@@ -166,7 +166,7 @@ monitor() {
 
     do
        echo "Changed: \$site"
-       relink();
+       relink
     done
 }
 case "\$1" in 
