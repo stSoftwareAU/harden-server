@@ -1,36 +1,36 @@
 #!/bin/bash
 set -e
 addUser( ) {
-        ret=false
-        user="letsencrypt"
-        getent passwd $user >/dev/null 2>&1 && ret=true
+    ret=false
+    user="letsencrypt"
+    getent passwd $user >/dev/null 2>&1 && ret=true
 
-        if $ret; then
-            echo "User '$user' exists"
-        else
-            useradd -g www-data -m -s /bin/bash $user
-        fi
+    if $ret; then
+        echo "User '$user' exists"
+    else
+        useradd -g www-data -m -s /bin/bash $user
+    fi
 }
 
 fetchFiles() {
-   cd /home/letsencrypt/
-   wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py > acme_tiny.py
-
-   if [ ! -f sync.sh ]; then
+    cd /home/letsencrypt/
+    wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py > acme_tiny.py
+    
+    if [ ! -f sync.sh ]; then
         wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/sync.sh > sync.sh
-
+        
         chmod 700 sync.sh
-   fi
-
-   if [ ! -f domains.txt ]; then
+    fi
+    
+    if [ ! -f domains.txt ]; then
         touch domains.txt
         chmod 600 domains.txt
-   fi
-
-   wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/run.sh > run.sh
-   chmod 700 run.sh
-
-   chown letsencrypt:www-data *
+    fi
+    
+    wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/run.sh > run.sh
+    chmod 700 run.sh
+    
+    chown letsencrypt:www-data *
 }
 
 generateKeys(){
@@ -85,11 +85,11 @@ EOF
 
 setupCron(){
         
-        rm -f /tmp/crontab.txt
-        
-        tmpfile=$(mktemp /tmp/letsencrypt_cron.XXXXXX)
-        
-        cat >$tmpfile << EOF
+    rm -f /tmp/crontab.txt
+    
+    tmpfile=$(mktemp /tmp/letsencrypt_cron.XXXXXX)
+    
+    cat >$tmpfile << EOF
 #!/bin/bash
 set +e        
 crontab -l > /tmp/crontab.txt
@@ -99,22 +99,22 @@ if ! grep -q "/home/letsencrypt/run.sh" /tmp/crontab.txt; then
      crontab < /tmp/crontab.txt
 fi
 EOF
-        chmod 777 $tmpfile
-        
-        sudo -u letsencrypt $tmpfile
-        rm $tmpfile
-        
-        rm -f /tmp/crontab.txt
-        tmpfile=$(mktemp /tmp/apache_cron.XXXXXX)
-        
-        cat >$tmpfile << EOF2
+    chmod 777 $tmpfile
+    
+    sudo -u letsencrypt $tmpfile
+    rm $tmpfile
+    
+    rm -f /tmp/crontab.txt
+    tmpfile=$(mktemp /tmp/apache_cron.XXXXXX)
+    
+    cat >$tmpfile << EOF2
 #!/bin/bash
 set +e        
 crontab -l > /tmp/crontab.txt
 set -e
 if ! grep -q "/etc/init.d/apache2" /tmp/crontab.txt; then
-     echo "0 5 * * 7 /etc/init.d/apache2 reload >/dev/null" >> /tmp/crontab.txt
-     crontab < /tmp/crontab.txt
+    echo "0 5 * * 7 /etc/init.d/apache2 reload >/dev/null" >> /tmp/crontab.txt
+    crontab < /tmp/crontab.txt
 fi
 EOF2
    chmod 777 $tmpfile
@@ -124,13 +124,76 @@ EOF2
    rm -f /tmp/crontab.txt
 }
 
-installPackages(){
+monitorSites(){
    if ! which inotifywait > /dev/null; then
         apt-get install inotify-tools
    fi
+   cat > /etc/init.d/stMonitorSites << EOF
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          stSoftware monitor
+# Required-Start:    apache2
+# Required-Stop:     
+# Should-Start:      networking
+# Should-stop:
+# Default-Start:     
+# Default-Stop:
+# X-Interactive:     
+# Short-Description: start the stSoftware servers.
+### END INIT INFO
+
+relink(){
+    rm /etc/apache2/sites-enabled/100-*
+    for f in /home/letsencrypt/sites/100-*; 
+    do 
+       ln -s $f /etc/apache2/sites-enabled/ 
+    done
+    
+    /etc/init.d/apache2 reload
 }
 
-installPackages;
+start() {
+    /etc/init.d/stMonitorSites monitor > /var/log/stMonitorSites.log 2>&1 &
+}
+
+stop() {
+    kill `ps -ef |grep stMonitorSites|grep -v grep |grep monitor| cut -c 10-15` > /dev/null 2>&1
+}
+
+monitor() {
+    inotifywait -m -q /home/letsencrypt/sites/ | while read site
+
+    do
+       relink();
+    done
+}
+case "$1" in 
+    monitor)
+       monitor
+       ;;
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+       echo "status was called"
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+exit 0 
+EOF
+    rm /etc/rc3.d/*stMonitorSites
+    ln -s /etc/init.d/stMonitorSites /etc/rc3.d/S99-stMonitorSites
+}
+
+monitorSites;
 addUser;
 fetchFiles;
 generateKeys;
