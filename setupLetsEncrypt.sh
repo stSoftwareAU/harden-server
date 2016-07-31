@@ -15,21 +15,21 @@ addUser( ) {
 fetchFiles() {
     cd /home/letsencrypt/
     wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py > acme_tiny.py
-    
+
     if [ ! -f sync.sh ]; then
         wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/sync.sh > sync.sh
-        
+
         chmod 700 sync.sh
     fi
-    
+
     if [ ! -f domains.txt ]; then
         touch domains.txt
         chmod 600 domains.txt
     fi
-    
+
     wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/run.sh > run.sh
     chmod 700 run.sh
-    
+
     chown letsencrypt:www-data *
 }
 
@@ -66,7 +66,7 @@ generateKeys(){
 setupApache(){
 
  if ! grep -q "well-known/acme-challenge" /etc/apache2/sites-enabled/000-default.conf; then
- 
+
   cat > /tmp/000-default.conf << EOF
 Alias /.well-known/acme-challenge/ /home/letsencrypt/challenges/
 <Directory /home/letsencrypt/challenges>
@@ -77,18 +77,18 @@ Alias /.well-known/acme-challenge/ /home/letsencrypt/challenges/
 EOF
    cat /etc/apache2/sites-enabled/000-default.conf >> /tmp/000-default.conf
    sed 's/JkMount \/\* \(.*\)/&\n\    JkUnMount \/.well-known\/acme-challenge\/\* \1/' /tmp/000-default.conf >/tmp/000-default.conf2
-   cp /tmp/000-default.conf2 /etc/apache2/sites-enabled/000-default.conf 
+   cp /tmp/000-default.conf2 /etc/apache2/sites-enabled/000-default.conf
   fi
 
-  /etc/init.d/apache2 restart        
+  /etc/init.d/apache2 restart
 }
 
 setupCron(){
-        
+
     rm -f /tmp/crontab.txt
-    
+
     tmpfile=$(mktemp /tmp/letsencrypt_cron.XXXXXX)
-    
+
     cat >$tmpfile << EOF
 #!/bin/bash
 set +e        
@@ -100,13 +100,13 @@ if ! grep -q "/home/letsencrypt/run.sh" /tmp/crontab.txt; then
 fi
 EOF
     chmod 777 $tmpfile
-    
+
     sudo -u letsencrypt $tmpfile
     rm $tmpfile
-    
+
     rm -f /tmp/crontab.txt
     tmpfile=$(mktemp /tmp/apache_cron.XXXXXX)
-    
+
     cat >$tmpfile << EOF2
 #!/bin/bash
 set +e        
@@ -118,8 +118,8 @@ if ! grep -q "/etc/init.d/apache2" /tmp/crontab.txt; then
 fi
 EOF2
    chmod 777 $tmpfile
-        
-   $tmpfile    
+
+   $tmpfile
    rm $tmpfile
    rm -f /tmp/crontab.txt
 }
@@ -165,6 +165,7 @@ monitor() {
     inotifywait -m -q /home/letsencrypt/sites/ | while read site
 
     do
+       echo "Changed: \$site"
        relink();
     done
 }
@@ -190,8 +191,9 @@ case "\$1" in
 esac
 exit 0 
 EOF
-    rm /etc/rc3.d/*stMonitorSites
+    rm -f /etc/rc3.d/*stMonitorSites
     ln -s /etc/init.d/stMonitorSites /etc/rc3.d/S99-stMonitorSites
+    /etc/init.d/stMonitorSites restart
 }
 
 monitorSites;
