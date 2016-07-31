@@ -141,6 +141,8 @@ monitorSites(){
 # X-Interactive:     
 # Short-Description: start the stSoftware servers.
 ### END INIT INFO
+set -e
+PRG=$0
 
 relink() {
     rm -f /etc/apache2/sites-enabled/100-*
@@ -157,8 +159,13 @@ start() {
 }
 
 stop() {
-    PRG=stMonitorSites
-    kill `ps -ef |grep \$PRG|grep -v grep |grep -v stop| cut -c 10-15` > /dev/null 2>&1
+    
+    ps -ef |grep \$PRG|grep -v grep |grep monitor| cut -c 10-15 > /tmp/kill_list.txt
+    
+    while read pid
+    do
+        kill \$pid
+    done < /tmp/kill_list.txt
 }
 
 monitor() {
