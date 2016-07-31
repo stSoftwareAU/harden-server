@@ -162,6 +162,10 @@ stop() {
 }
 
 monitor() {
+    if [ ! -f /home/letsencrypt/sites ]; then
+        mkdir -p /home/letsencrypt/sites
+        chown letsencrypt:www-data /home/letsencrypt/sites
+    fi
     inotifywait -m -q /home/letsencrypt/sites/ | while read site
 
     do
