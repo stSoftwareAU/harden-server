@@ -175,7 +175,7 @@ monitor() {
     fi
     while true #run indefinitely
     do 
-        inotifywait -e modify,close_write,create,delete /home/letsencrypt/sites
+        inotifywait --exclude '\\.*' -e modify,close_write,create,delete /home/letsencrypt/sites
         sleep 5
         relink
     done
