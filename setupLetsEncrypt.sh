@@ -13,20 +13,12 @@ addUser( ) {
 }
 
 fetchFiles() {
-        cd /home/letsencrypt/
-        wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py > acme_tiny.py
-
-        chown letsencrypt:www-data acme_tiny.py
+   cd /home/letsencrypt/
+   wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py > acme_tiny.py
 
    if [ ! -f sync.sh ]; then
-        #make some challenge folder
-        echo "#!/bin/bash" > sync.sh
-        echo "" >> sync.sh
-        echo "#rsync -rtpqu certs www2:" >> sync.sh
-        echo "#rsync -rtpqu challenges www2:" >> sync.sh
-        echo "#rsync -rtpqu csr www2:" >> sync.sh
-        echo "#rsync -rtpqu sites www2:" >> sync.sh
-        echo "#rsync -rtpqu keys www2:" >> sync.sh
+        wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/sync.sh > sync.sh
+
         chmod 700 sync.sh
    fi
 
@@ -35,12 +27,10 @@ fetchFiles() {
         chmod 600 domains.txt
    fi
 
-   if [ ! -f run.sh ]; then
-        wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/run.sh > run.sh
-   fi
-
+   wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/run.sh > run.sh
    chmod 700 run.sh
-   chown letsencrypt:www-data run.sh
+
+   chown letsencrypt:www-data *
 }
 
 generateKeys(){
