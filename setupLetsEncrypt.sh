@@ -146,7 +146,7 @@ PRG=stMonitorSites
 
 relink() {
     rm -f /etc/apache2/sites-enabled/100-*
-    for f in /home/letsencrypt/sites/100-*; 
+    for f in /home/letsencrypt/sites/100-*.conf; 
     do 
        ln -s \$f /etc/apache2/sites-enabled/ 
     done
