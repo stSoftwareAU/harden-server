@@ -157,7 +157,7 @@ start() {
 }
 
 stop() {
-    PRG=\$1
+    PRG=stMonitorSites
     kill `ps -ef |grep \$PRG|grep -v grep |grep -v stop| cut -c 10-15` > /dev/null 2>&1
 }
 
@@ -177,7 +177,7 @@ case "\$1" in
        start
        ;;
     stop)
-       stop \$0
+       stop
        ;;
     restart)
        stop
