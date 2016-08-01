@@ -173,6 +173,7 @@ monitor() {
         mkdir -p /home/letsencrypt/sites
         chown letsencrypt:www-data /home/letsencrypt/sites
     fi
+    relink
     while true #run indefinitely
     do 
         inotifywait --exclude '\\.100*' -e modify,move,close_write,create,delete /home/letsencrypt/sites
