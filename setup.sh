@@ -136,7 +136,7 @@ fetchInstaller(){
             echo "do not run as root"
             exit
         fi
-
+        set -e
 
         rsync -hlptvcz --progress --stats www1.stsoftware.com.au:/home/jenkins/release/${PREFIX}Installer.jar /tmp/
         chmod ugo+r /tmp/${PREFIX}Installer.jar
