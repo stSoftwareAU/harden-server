@@ -430,7 +430,7 @@ setupLetsEncrypt() {
 
 setupIntrusionDetection(){
   cd /tmp
-  rm setupIntrusionDetection.sh
+  rm -f setupIntrusionDetection.sh
   wget https://github.com/stSoftwareAU/harden-server/raw/master/setupIntrusionDetection.sh
   chmod 777 setupIntrusionDetection.sh
   sudo ./setupIntrusionDetection.sh
