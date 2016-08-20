@@ -11,10 +11,30 @@ addUser( ) {
         useradd -g adm -m -s /bin/bash $user
     fi
 }
-
-setupCronROOT(){
+setupCronID(){
 
   tmpfile=$(mktemp /tmp/id_cron.XXXXXX)
+  
+  cat >$tmpfile << EOF
+#!/bin/bash
+set +e  
+cronfile=\$(mktemp /tmp/tmp_cron.XXXXXX)
+crontab -l > \$cronfile
+set -e
+if ! grep -q "detect.sh" \$cronfile; then
+  echo "*/15 * * * * ~/detect.sh > detect.log 2>1" >> \$cronfile
+  crontab < \$cronfile
+fi
+rm \$cronfile
+EOF
+  chmod 777 $tmpfile
+  
+  sudo -u idscan $tmpfile
+  rm $tmpfile
+}
+setupCronROOT(){
+
+  tmpfile=$(mktemp /tmp/root_cron.XXXXXX)
   
   cat >$tmpfile << EOF
 #!/bin/bash
@@ -32,6 +52,22 @@ EOF
   sudo $tmpfile
   rm $tmpfile
 }
+fetchFiles(){
 
+  tmpfile=$(mktemp /tmp/id_fetch.XXXXXX)
+  
+  cat >$tmpfile << EOF
+#!/bin/bash
+set +e  
+wget -O - https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/detect.sh > detect.sh
+chmod u+x detect.sh
+EOF
+  chmod 777 $tmpfile
+  
+  sudo -u idscan $tmpfile
+  rm $tmpfile
+}
 addUser
 setupCronROOT
+setupCronID
+fetchFiles
