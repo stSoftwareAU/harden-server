@@ -157,7 +157,8 @@ stepConfigure(){
 
   read -e -p "Enter production user: " -i "$PROD_USER" PROD_USER
   read -e -p "Enter UAT user: " -i "$UAT_USER" UAT_USER
-
+  read -e -p "Enter local subnet: " -i "$LOCAL_SUBNET" LOCAL_SUBNET
+  
   cat > ~/env.sh << EOF
 PREFIX=$PREFIX
 export PREFIX
@@ -182,6 +183,9 @@ export PROD_USER
 
 UAT_USER=$UAT_USER
 export UAT_USER
+
+LOCAL_SUBNET=$LOCAL_SUBNET
+export LOCAL_SUBNET
 EOF
   chmod 700 ~/env.sh
 }
@@ -346,32 +350,27 @@ defaults() {
   if [[ ! $PROD_USER = *[!\ ]* ]]; then
     PROD_USER="webapps"
   fi
-}
-
-allowHosts(){
-    tmpfile=$(mktemp /tmp/allow-script.XXXXXX)
-    
-    cat >$tmpfile << EOF
-cat /etc/hosts.allow | egrep -v "(192\.168\.|\#ST|\#Local)" >/tmp/hosts.allow
-echo "sshd: 192.168.7.      #Local " >> /tmp/hosts.allow
-echo "sshd: 60.241.239.222  #ST Office iinet" >> /tmp/hosts.allow
-echo "sshd: 58.108.224.217  #ST Office optus" >> /tmp/hosts.allow
-echo "sshd: 101.0.96.194    #ST www1"
-echo "sshd: 101.0.106.2     #ST www2"
-cp /tmp/hosts.allow /etc/hosts.allow
-rm /tmp/hosts.allow
-cat /etc/hosts.deny | egrep -v "sshd" >/tmp/hosts.deny
-echo "sshd: ALL" >> /tmp/hosts.deny
-cp /tmp/hosts.deny /etc/hosts.deny
-rm /tmp/hosts.deny
-EOF
-        
-  chmod 777 $tmpfile
-  sudo $tmpfile
-  rm $tmpfile
+  
+  if [[ ! $LOCAL_SUBNET = *[!\ ]* ]]; then
+    LOCAL_SUBNET="192.168.7."
+  fi
 }
 
 setupFirewall() {
+  
+  hostsAllowTemp=$(mktemp /tmp/hosts.allow.XXXXXX)
+  cat /etc/hosts.allow | egrep -v "(\#ST|\#Local)" > $hostsAllowTemp
+  echo "sshd: $LOCAL_SUBNET      #Local "  >> $hostsAllowTemp
+  echo "sshd: 60.241.239.222  #ST Office iinet" >> $hostsAllowTemp
+  echo "sshd: 58.108.224.217  #ST Office optus" >> $hostsAllowTemp
+  echo "sshd: 101.0.96.194    #ST www1" >> $hostsAllowTemp
+  echo "sshd: 101.0.106.2     #ST www2" >> $hostsAllowTemp
+  echo "sshd: 101.0.80.130    #ST www3" >> $hostsAllowTemp
+  
+  hostsDenyTemp=$(mktemp /tmp/hosts.deny.XXXXXX)
+  cat /etc/hosts.deny | egrep -v "sshd" > $hostsDenyTemp
+  echo "sshd: ALL" >> $hostsDenyTemp
+  
   sudo ufw disable
   sudo ufw allow ssh
   #sudo ufw allow imap
@@ -384,6 +383,7 @@ setupFirewall() {
     sudo ufw allow from $WWW1_IP to any port 8009
     # JMS
     sudo ufw allow from $WWW1_IP to any port 61616
+    echo "sshd: $WWW1_IP    #ST www1 (internal)" >> $hostsAllowTemp
   fi
   if [[ $WWW2_IP = *[!\ ]* ]]; then
     # Postgres
@@ -392,6 +392,7 @@ setupFirewall() {
     sudo ufw allow from $WWW2_IP to any port 8009
     # JMS
     sudo ufw allow from $WWW2_IP to any port 61616
+    echo "sshd: $WWW2_IP    #ST www2 (internal)" >> $hostsAllowTemp
   fi
   if [[ $WWW3_IP = *[!\ ]* ]]; then
     # Postgres
@@ -400,6 +401,7 @@ setupFirewall() {
     sudo ufw allow from $WWW3_IP to any port 8009
     # JMS
     sudo ufw allow from $WWW3_IP to any port 61616
+    echo "sshd: $WWW3_IP    #ST www3 (internal)" >> $hostsAllowTemp
   fi
   if [[ $WWW4_IP = *[!\ ]* ]]; then
     # Postgres
@@ -408,11 +410,14 @@ setupFirewall() {
     sudo ufw allow from $WWW4_IP to any port 8009
     # JMS
     sudo ufw allow from $WWW4_IP to any port 61616
+    echo "sshd: $WWW4_IP    #ST www4 (internal)" >> $hostsAllowTemp
   fi
   sudo ufw enable
   
   sudo sed --in-place -r 's/^[\t #]*PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
 
+  sudo cp $hostsAllowTemp /etc/hosts.allow
+  sudo cp $hostsDenyTemp  /etc/hosts.deny
 }
 
 setupApache() {
@@ -443,7 +448,7 @@ menu() {
 
   title="Server Hardene"
   prompt="Pick an option:"
-  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Allow Hosts" "Firewall" "Apache" "Lets Encrypt" "Intrusion Detection")
+  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Firewall" "Apache" "Lets Encrypt" "Intrusion Detection")
 
   echo "$title"
   PS3="$prompt "
@@ -460,11 +465,10 @@ menu() {
       7 ) updateOS;;
       8 ) fetchInstaller;;
       9 ) installST;;
-      10) allowHosts;;
-      11) setupFirewall;;
-      12) setupApache;;
-      13) setupLetsEncrypt;;
-      14) setupIntrusionDetection;;
+      10) setupFirewall;;
+      11) setupApache;;
+      12) setupLetsEncrypt;;
+      13) setupIntrusionDetection;;
 
       *) echo "Invalid option. ";continue;;
     esac
