@@ -60,20 +60,20 @@ EOF
   rm $tmpfile
 }
 
-formatDisk(){
-  disk=$1
-  fdisk /dev/${disk}
-  mkfs -t ext4 /dev/${disk}1
-}
+#formatDisk(){
+#  disk=$1
+#  fdisk /dev/${disk}
+#  mkfs -t ext4 /dev/${disk}1
+#}
 
-mountData(){
-  mkdir -p /data
-  cat /etc/fstab |grep -v sdb1 > /tmp/fstab
-  echo "/dev/sdb1    /data   ext4    defaults     0        2" >> /tmp/fstab
-  cp /tmp/fstab /etc/fstab
+#mountData(){
+#  mkdir -p /data
+#  cat /etc/fstab |grep -v sdb1 > /tmp/fstab
+#  echo "/dev/sdb1    /data   ext4    defaults     0        2" >> /tmp/fstab
+#  cp /tmp/fstab /etc/fstab
 
-  mount /dev/sdb1 /data
-}
+#  mount /dev/sdb1 /data
+#}
 
 changePostgres(){
   if (( $EUID != 0 )); then
@@ -410,6 +410,9 @@ setupFirewall() {
     sudo ufw allow from $WWW4_IP to any port 61616
   fi
   sudo ufw enable
+  
+  sudo sed -r 's/^[\t #]*PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
+
 }
 
 setupApache() {
