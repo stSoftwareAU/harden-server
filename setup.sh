@@ -152,6 +152,11 @@ stepConfigure(){
   read -e -p "Postgress Password: " -i "$PG_PASS" PG_PASS
   read -e -p "www1 IP: " -i "$WWW1_IP" WWW1_IP
   read -e -p "www2 IP: " -i "$WWW2_IP" WWW2_IP
+  read -e -p "www3 IP: " -i "$WWW3_IP" WWW3_IP
+  read -e -p "www4 IP: " -i "$WWW4_IP" WWW4_IP
+
+  read -e -p "Enter production user: " -i "$PROD_USER" PROD_USER
+  read -e -p "Enter UAT user: " -i "$UAT_USER" UAT_USER
 
   cat > ~/env.sh << EOF
 PREFIX=$PREFIX
@@ -163,12 +168,23 @@ export WWW1_IP
 WWW2_IP=$WWW2_IP
 export WWW2_IP
 
+WWW3_IP=$WWW3_IP
+export WWW3_IP
+
+WWW4_IP=$WWW4_IP
+export WWW4_IP
+
 PG_PASS=$PG_PASS
 export PG_PASS
+
+PROD_USER=$PROD_USER
+export PROD_USER
+
+UAT_USER=$UAT_USER
+export UAT_USER
 EOF
   chmod 700 ~/env.sh
 }
-
 
 installST(){
   if (( $EUID != 0 )); then
@@ -191,7 +207,7 @@ mkdir -p cache
 mkdir -p logs 
 
 if [ -f ${PREFIX}Server\$today/logs ]; then
-    rm -fr ${PREFIX}Server\$today/logs
+  rm -fr ${PREFIX}Server\$today/logs
 fi
 
 ln -s ~/logs ${PREFIX}Server\$today/logs 
@@ -200,10 +216,10 @@ java -jar launcher.jar download
 cd
 
 if [ -s ${PREFIX}Server ]; then
-    cd ${PREFIX}Server\$today
-    java -jar launcher.jar configure
-    cd
-    rm ${PREFIX}Server
+  cd ${PREFIX}Server\$today
+  java -jar launcher.jar configure
+  cd
+  rm ${PREFIX}Server
 fi
 
 ln -s ${PREFIX}Server\$today ${PREFIX}Server
@@ -281,29 +297,29 @@ EOF
 ### END INIT INFO
 
 start() {
-    (sleep 60 && sudo -u webapps -i /home/webapps/start.sh ) > /var/log/stSoftware.log 2>&1 &
+  (sleep 60 && sudo -u webapps -i /home/webapps/start.sh ) > /var/log/stSoftware.log 2>&1 &
 }
 
 stop() {
-    sudo -u webapps -i /home/webapps/stop.sh
+  sudo -u webapps -i /home/webapps/stop.sh
 }
 
 case "\$1" in 
-    start)
-       start
-       ;;
-    stop)
-       stop
-       ;;
-    restart)
-       stop
-       start
-       ;;
-    status)
-       echo "status was called"
-       ;;
-    *)
-       echo "Usage: \$0 {start|stop|status|restart}"
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  status)
+    echo "status was called"
+    ;;
+  *)
+    echo "Usage: \$0 {start|stop|status|restart}"
 esac
 exit 0 
 
@@ -323,9 +339,12 @@ defaults() {
     . ~/env.sh
   fi
 
-
   if [[ ! $PREFIX = *[!\ ]* ]]; then
     PREFIX="jt"
+  fi
+  
+  if [[ ! $PROD_USER = *[!\ ]* ]]; then
+    PROD_USER="webapps"
   fi
 }
 
