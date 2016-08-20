@@ -1,5 +1,16 @@
 #!/bin/bash
 set -e
+addUser( ) {
+    ret=false
+    user="idscan"
+    getent passwd $user >/dev/null 2>&1 && ret=true
+
+    if $ret; then
+        echo "User '$user' exists"
+    else
+        useradd -m -s /bin/bash $user
+    fi
+}
 
 setupCronROOT(){
 
@@ -21,5 +32,6 @@ EOF
   sudo $tmpfile
   rm $tmpfile
 }
-  
+
+addUser
 setupCronROOT
