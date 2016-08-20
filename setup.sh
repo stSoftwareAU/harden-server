@@ -411,7 +411,7 @@ setupFirewall() {
   fi
   sudo ufw enable
   
-  sudo sed -r 's/^[\t #]*PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
+  sudo sed --in-place -r 's/^[\t #]*PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
 
 }
 
