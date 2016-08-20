@@ -8,7 +8,7 @@ addUser( ) {
     if $ret; then
         echo "User '$user' exists"
     else
-        useradd -G adm -m -s /bin/bash $user
+        useradd -g adm -m -s /bin/bash $user
     fi
 }
 
