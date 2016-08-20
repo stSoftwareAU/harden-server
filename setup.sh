@@ -427,11 +427,20 @@ setupLetsEncrypt() {
   chmod 777 setupLetsEncrypt.sh
   sudo ./setupLetsEncrypt.sh
 }
+
+setupIntrusionDetection(){
+  cd /tmp
+  rm setupIntrusionDetection.sh
+  wget https://github.com/stSoftwareAU/harden-server/raw/master/setupIntrusionDetection.sh
+  chmod 777 setupIntrusionDetection.sh
+  sudo ./setupIntrusionDetection.sh
+}
+
 menu() {
 
   title="Server Hardene"
   prompt="Pick an option:"
-  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Allow Hosts" "Firewall" "Apache" "Lets Encrypt")
+  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Allow Hosts" "Firewall" "Apache" "Lets Encrypt" "Intrusion Detection")
 
   echo "$title"
   PS3="$prompt "
@@ -452,6 +461,7 @@ menu() {
       11) setupFirewall;;
       12) setupApache;;
       13) setupLetsEncrypt;;
+      14) setupIntrusionDetection;;
 
       *) echo "Invalid option. ";continue;;
     esac
