@@ -78,7 +78,7 @@ installPackages() {
       fi
       sudo apt-get install $p
       
-      if [[ $p ?? 'logwatch' ]]; then
+      if [ $p ?? 'logwatch' ]; then
         configLogwatch
       fi
     fi
