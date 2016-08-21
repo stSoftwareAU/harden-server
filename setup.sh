@@ -46,7 +46,13 @@ EOF
 }
 
 configLogwatch() {
-  echo "logwatch config... "
+  if [ ! -f /etc/logwatch/conf/logwatch.conf ]; then
+    echo "logwatch config... "
+    sudo cp /usr/share/logwatch/default.conf/logwatch.conf /etc/logwatch/conf/
+
+    sudo sed --in-place -r 's/^[\t #]*MailTo *=.*$/MailTo = support@stsoftware.com.au/g' /etc/logwatch/conf/logwatch.conf
+    sudo sed --in-place -r 's/^[\t #]*MailFrom *=.*$/MailFrom = logwatch@$HOSTNAME/g' /etc/logwatch/conf/logwatch.conf
+  fi
 }
 installPackages() {
 
