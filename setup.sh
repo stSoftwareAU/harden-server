@@ -45,19 +45,46 @@ EOF
   rm $tmpfile
 }
 
+configLogwatch() {
+  echo "logwatch config... "
+}
 installPackages() {
-  tmpfile=$(mktemp /tmp/install.XXXXXX)
-  
-  cat >$tmpfile << EOF
-add-apt-repository ppa:webupd8team/java
-apt-get update;
-apt-get install fail2ban openssh-server apache2 libapache2-mod-jk oracle-java8-installer postfix postgresql htop aspell git
-apt-get install lynx unattended-upgrades
-a2enmod ssl
-EOF
-  chmod 777 $tmpfile
-  sudo $tmpfile
-  rm $tmpfile
+
+  ## list of packages
+  packagelist=(
+    "fail2ban" 
+    "openssh-server" 
+    "apache2"
+    "libapache2-mod-jk"
+    "oracle-java8-installer"
+    "postfix"
+    "postgresql"
+    "htop"
+    "aspell"
+    "git"
+    "lynx"
+    "unattended-upgrades"
+    "logwatch"
+  )
+
+  ## now loop through the above array
+  for p in "${packagelist[@]}"
+  do
+    if  apt-cache policy $p|grep "Installed:" | grep "(none)"; then
+      echo "Install: $p"
+      if [ $p ?? 'java8' ]; then
+        sudo add-apt-repository ppa:webupd8team/java
+        sudo apt-get update;
+      fi
+      sudo apt-get install $p
+      
+      if [ $p ?? 'logwatch' ]; then
+        configLogwatch
+      fi
+    fi
+  done
+
+  sudo a2enmod ssl
 }
 
 #formatDisk(){
