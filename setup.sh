@@ -506,11 +506,11 @@ menu() {
       11) setupApache;;
       12) setupLetsEncrypt;;
       13) setupIntrusionDetection;;
-
-      *) echo "Invalid option. ";continue;;
+      *) 
+        echo "Invalid option. ";
+        continue;;
     esac
     break
-
   done
 }
 
