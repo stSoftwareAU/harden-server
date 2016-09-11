@@ -32,7 +32,7 @@ updateOS() {
   then
     mkdir -p backups
     
-    chmod u+x $tmpSetup
+    chmod u+x $tmpSetup
     mv setup.sh backups/setup`date +%Y%m%d_%H%M%S`.sh
     mv $tmpSetup setup.sh
   fi 
