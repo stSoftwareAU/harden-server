@@ -23,11 +23,19 @@ addUser( ) {
     fi
 }
 updateOS() {
+  set -e
   cd 
-  
-  wget -O - https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/setup.sh > setup.sh
+  tmpSetup=$(mktemp /tmp/setup.XXXXXX)
+  wget -O - https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/setup.sh > $tmpSetup
 
-  chmod u+x setup.sh
+  if ! cmp $tmpSetup setup.sh >/dev/null 2>&1
+  then
+    mkdir -p backups
+    
+    chmod u+x $tmpSetup
+    mv setup.sh backups/setup`date +%Y%m%d_%H%M%S`.sh
+    mv $tmpSetup setup.sh
+  fi 
   
   tmpfile=$(mktemp /tmp/pg_pass.XXXXXX)
   
@@ -109,11 +117,7 @@ installPackages() {
 #}
 
 changePostgres(){
-  if (( $EUID != 0 )); then
-    echo "Please run as root"
-    exit
-  fi
-
+  set -e
   if [[ ! $PG_PASS = *[!\ ]* ]]; then
     echo "blank password"
     exit
@@ -124,20 +128,20 @@ changePostgres(){
 echo "alter user postgres with password '$PG_PASS';"|psql -d postgres -U postgres
 EOF
   chmod 777 $tmpfile
-  su - postgres -c $tmpfile
+  sudo su - postgres -c $tmpfile
   rm $tmpfile
   
   if [ -f ~/.pgpass ]; then
-          cat ~/.pgpass |grep -v localhost > /tmp/zz
+      cat ~/.pgpass |grep -v localhost > /tmp/zz
   else
-          rm -f /tmp/zz
-          touch /tmp/zz
+    rm -f /tmp/zz
+    touch /tmp/zz
   fi
   echo "localhost:*:*:postgres:$PG_PASS" >> /tmp/zz
 
   mv /tmp/zz ~/.pgpass
   chmod 0600 ~/.pgpass
-  chown $SUDO_USER:$SUDO_USER ~/.pgpass
+  #chown $SUDO_USER:$SUDO_USER ~/.pgpass
 }
 
 autoSSH(){
@@ -481,7 +485,7 @@ menu() {
 
   title="Server Hardene"
   prompt="Pick an option:"
-  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgress PW @sudo" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Firewall" "Apache" "Lets Encrypt" "Intrusion Detection")
+  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgres PW" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Firewall" "Apache" "Lets Encrypt" "Intrusion Detection")
 
   echo "$title"
   PS3="$prompt "
