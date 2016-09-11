@@ -49,7 +49,7 @@ EOF
     mkdir -p backups
     
     chmod u+x $tmpSetup
-    mv setup.sh backups/setup`date +%Y%m%d_%H%M%S`.sh
+    mv setup.sh backups/setup-`date +%Y%m%d_%H%M%S`.sh
     mv $tmpSetup setup.sh
   else
     rm $tmpSetup
