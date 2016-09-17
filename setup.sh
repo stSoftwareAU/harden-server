@@ -89,13 +89,13 @@ installPackages() {
   do
     if  apt-cache policy $p|grep "Installed:" | grep "(none)"; then
       echo "Install: $p"
-      if [ $p ?? 'java8' ]; then
+      if [ $p = 'java8' ]; then
         sudo add-apt-repository ppa:webupd8team/java
         sudo apt-get update;
       fi
       sudo apt-get install $p
       
-      if [ $p ?? 'logwatch' ]; then
+      if [ $p = 'logwatch' ]; then
         configLogwatch
       fi
     fi
