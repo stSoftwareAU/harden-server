@@ -460,20 +460,26 @@ setupFirewall() {
   sudo cp $hostsDenyTemp  /etc/hosts.deny
 }
 
-setupApache() {
-  cd /tmp
-  rm setupApache.sh
-  wget https://github.com/stSoftwareAU/harden-server/raw/master/setupApache.sh
-  chmod 777 setupApache.sh
-  sudo ./setupApache.sh
-}
+fetchAndSudo()
+{
+  prefix=$1
+  cd
+  mkdir -p bin
+  tmpSetup=$(mktemp /tmp/$prefix.XXXXXX)
+  wget -O - https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/$prefix.sh > $tmpSetup
 
-setupLetsEncrypt() {
-  cd /tmp
-  rm setupLetsEncrypt.sh
-  wget https://github.com/stSoftwareAU/harden-server/raw/master/setupLetsEncrypt.sh
-  chmod 777 setupLetsEncrypt.sh
-  sudo ./setupLetsEncrypt.sh
+  if ! cmp $tmpSetup bin/$prefix.sh >/dev/null 2>&1
+  then
+    mkdir -p backups
+    
+    mv bin/$prefix.sh backups/$prefix-`date +%Y%m%d_%H%M%S`.sh
+    mv $tmpSetup bin/$prefix.sh
+  else
+    rm $tmpSetup
+  fi
+  
+  chmod u+x bin/$prefix.sh
+  sudo bin/$prefix.sh
 }
 
 setupIntrusionDetection(){
@@ -506,8 +512,8 @@ menu() {
       8 ) fetchInstaller;;
       9 ) installST;;
       10) setupFirewall;;
-      11) setupApache;;
-      12) setupLetsEncrypt;;
+      11) fetchAndSudo "setupApache";;
+      12) fetchAndSudo "setupLetsEncrypt";;
       13) setupIntrusionDetection;;
       *) 
         echo "Invalid option. ";
