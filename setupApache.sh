@@ -20,7 +20,7 @@ if ! grep -qE "1\.0\.[01]" /tmp/openssl.version; then
   cat /tmp/ssl.conf2 |grep -v "SSLOpenSSLConfCmd" > /tmp/ssl.conf3
   echo "SSLOpenSSLConfCmd Curves secp384r1" >> /tmp/ssl.conf3
   echo "</IfModule>" >> /tmp/ssl.conf3
-  cp /tmp/ssl.conf3 > /tmp/ssl.conf
+  cp /tmp/ssl.conf3 /tmp/ssl.conf
 fi  
 
 rm /etc/apache2/mods-enabled/ssl.conf
