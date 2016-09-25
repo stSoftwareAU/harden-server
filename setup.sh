@@ -75,6 +75,7 @@ installPackages() {
     "libapache2-mod-jk"
     "oracle-java8-installer"
     "postfix"
+    "mailutils"
     "postgresql"
     "htop"
     "aspell"
