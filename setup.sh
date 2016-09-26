@@ -479,14 +479,18 @@ fetchAndSudo()
   tmpSetup=$(mktemp /tmp/$prefix.XXXXXX)
   wget -O - https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/$prefix.sh > $tmpSetup
 
-  if ! cmp $tmpSetup bin/$prefix.sh >/dev/null 2>&1
-  then
-    mkdir -p backups
-    
-    mv bin/$prefix.sh backups/$prefix-`date +%Y%m%d_%H%M%S`.sh
+  if [ ! -f bin/$prefix.sh ]; then
     mv $tmpSetup bin/$prefix.sh
   else
-    rm $tmpSetup
+    if ! cmp $tmpSetup bin/$prefix.sh >/dev/null 2>&1
+    then
+      mkdir -p backups
+
+      mv bin/$prefix.sh backups/$prefix-`date +%Y%m%d_%H%M%S`.sh
+      mv $tmpSetup bin/$prefix.sh
+    else
+      rm $tmpSetup
+    fi
   fi
   
   chmod u+x bin/$prefix.sh
