@@ -92,6 +92,7 @@ installPackages() {
     "lynx"
     "unattended-upgrades"
     "logwatch"
+    "ntp"
   )
 
   ## now loop through the above array
