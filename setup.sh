@@ -504,7 +504,7 @@ menu() {
 
   title="Server Hardene"
   prompt="Pick an option:"
-  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgres PW" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Firewall" "Apache" "Lets Encrypt" "Intrusion Detection")
+  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgres PW" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Firewall" "Apache" "Lets Encrypt" "Timezone" "Intrusion Detection")
 
   echo "$title"
   PS3="$prompt "
@@ -524,6 +524,7 @@ menu() {
       10) setupFirewall;;
       11) fetchAndSudo "setupApache";;
       12) fetchAndSudo "setupLetsEncrypt";;
+      12) fetchAndSudo "setupTimezone";;
       13) setupIntrusionDetection;;
       *) 
         echo "Invalid option. ";
