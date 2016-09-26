@@ -525,8 +525,8 @@ menu() {
       10) setupFirewall;;
       11) fetchAndSudo "setupApache";;
       12) fetchAndSudo "setupLetsEncrypt";;
-      12) fetchAndSudo "setupTimezone";;
-      13) setupIntrusionDetection;;
+      13) fetchAndSudo "setupTimezone";;
+      14) setupIntrusionDetection;;
       *) 
         echo "Invalid option. ";
         continue;;
