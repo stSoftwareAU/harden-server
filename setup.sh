@@ -528,7 +528,7 @@ menu() {
       9 ) installST;;
       10) setupFirewall;;
       11) fetchAndSudo "setupApache";;
-      12) fetchAndSudo "setupLetsEncrypt";;
+      12) sudo ./setupLetsEncrypt.sh;;
       13) fetchAndSudo "setupTimezone";;
       14) setupIntrusionDetection;;
       *) 
