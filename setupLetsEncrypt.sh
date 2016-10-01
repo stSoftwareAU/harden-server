@@ -150,7 +150,7 @@ relink() {
     do 
        ln -s \$f /etc/apache2/sites-enabled/ 
     done
-    
+    rm /etc/apache2/sites-enabled/100-\*.conf
     /etc/init.d/apache2 reload
 }
 
