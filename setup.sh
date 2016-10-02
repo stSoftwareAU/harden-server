@@ -3,23 +3,23 @@ set -e
 
 addGroup( ) {
   ret=false
-  getent group $1 >/dev/null 2>&1 && ret=true
+  sudo getent group $1 >/dev/null 2>&1 && ret=true
 
   if $ret; then
     echo "group '$1' exists"
   else
-    groupadd $1
+    sudo groupadd $1
   fi
 }
 
 addUser( ) {
     ret=false
-    getent passwd $1 >/dev/null 2>&1 && ret=true
+    sudo getent passwd $1 >/dev/null 2>&1 && ret=true
 
     if $ret; then
       echo "User '$1' exists"
     else
-      useradd -g www-data -m -s /bin/bash $1
+      sudo useradd -g www-data -m -s /bin/bash $1
     fi
 }
 updateOS() {
@@ -471,7 +471,7 @@ menu() {
 
   title="Server Hardene"
   prompt="Pick an option:"
-  options=( "Configure" "Create groups @sudo" "Create users @sudo" "Install packages" "Change Postgres PW" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Firewall" "Apache" "Lets Encrypt" "Timezone" "Intrusion Detection")
+  options=( "Configure" "Create groups" "Create users" "Install packages" "Change Postgres PW" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Firewall" "Apache" "Lets Encrypt" "Timezone" "Intrusion Detection")
 
   echo "$title"
   PS3="$prompt "
