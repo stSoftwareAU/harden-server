@@ -41,19 +41,7 @@ EOF
   sudo  $tmpfile
   rm $tmpfile
   
-  tmpSetup=$(mktemp /tmp/setup.XXXXXX)
-  wget -O - https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/setup.sh > $tmpSetup
-
-  if ! cmp $tmpSetup setup.sh >/dev/null 2>&1
-  then
-    mkdir -p backups
-    
-    chmod u+x $tmpSetup
-    mv setup.sh backups/setup-`date +%Y%m%d_%H%M%S`.sh
-    mv $tmpSetup setup.sh
-  else
-    rm $tmpSetup
-  fi
+  
 }
 
 configLogwatch() {
