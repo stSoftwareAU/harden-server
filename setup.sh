@@ -420,6 +420,8 @@ setupFirewall() {
     sudo ufw allow from $WWW1_IP to any port 5432
     # Tomcat ajp13
     sudo ufw allow from $WWW1_IP to any port 8009
+    # Tomcat ajp13 uat
+    sudo ufw allow from $WWW1_IP to any port 7009
     # JMS
     sudo ufw allow from $WWW1_IP to any port 61616
     echo "sshd: $WWW1_IP    #ST www1 (internal)" >> $hostsAllowTemp
@@ -429,6 +431,8 @@ setupFirewall() {
     sudo ufw allow from $WWW2_IP to any port 5432
     # Tomcat ajp13
     sudo ufw allow from $WWW2_IP to any port 8009
+    # Tomcat ajp13 uat
+    sudo ufw allow from $WWW2_IP to any port 7009
     # JMS
     sudo ufw allow from $WWW2_IP to any port 61616
     echo "sshd: $WWW2_IP    #ST www2 (internal)" >> $hostsAllowTemp
@@ -438,6 +442,8 @@ setupFirewall() {
     sudo ufw allow from $WWW3_IP to any port 5432
     # Tomcat ajp13
     sudo ufw allow from $WWW3_IP to any port 8009
+    # Tomcat ajp13
+    sudo ufw allow from $WWW3_IP to any port 7009
     # JMS
     sudo ufw allow from $WWW3_IP to any port 61616
     echo "sshd: $WWW3_IP    #ST www3 (internal)" >> $hostsAllowTemp
@@ -447,6 +453,8 @@ setupFirewall() {
     sudo ufw allow from $WWW4_IP to any port 5432
     # Tomcat ajp13
     sudo ufw allow from $WWW4_IP to any port 8009
+    # Tomcat ajp13
+    sudo ufw allow from $WWW4_IP to any port 7009
     # JMS
     sudo ufw allow from $WWW4_IP to any port 61616
     echo "sshd: $WWW4_IP    #ST www4 (internal)" >> $hostsAllowTemp
@@ -457,40 +465,6 @@ setupFirewall() {
 
   sudo cp $hostsAllowTemp /etc/hosts.allow
   sudo cp $hostsDenyTemp  /etc/hosts.deny
-}
-
-fetchAndSudo()
-{
-  prefix=$1
-  cd
-  mkdir -p bin
-  tmpSetup=$(mktemp /tmp/$prefix.XXXXXX)
-  wget -O - https://raw.githubusercontent.com/stSoftwareAU/harden-server/master/$prefix.sh > $tmpSetup
-
-  if [ ! -f bin/$prefix.sh ]; then
-    mv $tmpSetup bin/$prefix.sh
-  else
-    if ! cmp $tmpSetup bin/$prefix.sh >/dev/null 2>&1
-    then
-      mkdir -p backups
-
-      mv bin/$prefix.sh backups/$prefix-`date +%Y%m%d_%H%M%S`.sh
-      mv $tmpSetup bin/$prefix.sh
-    else
-      rm $tmpSetup
-    fi
-  fi
-  
-  chmod u+x bin/$prefix.sh
-  sudo bin/$prefix.sh
-}
-
-setupIntrusionDetection(){
-  cd /tmp
-  rm -f setupIntrusionDetection.sh
-  wget https://github.com/stSoftwareAU/harden-server/raw/master/setupIntrusionDetection.sh
-  chmod 777 setupIntrusionDetection.sh
-  sudo ./setupIntrusionDetection.sh
 }
 
 menu() {
@@ -515,10 +489,10 @@ menu() {
       8 ) fetchInstaller;;
       9 ) installST;;
       10) setupFirewall;;
-      11) fetchAndSudo "setupApache";;
+      11) sudo ./setupApache.sh;;
       12) sudo ./setupLetsEncrypt.sh;;
-      13) fetchAndSudo "setupTimezone";;
-      14) setupIntrusionDetection;;
+      13) sudo ./setupTimezone.sh;;
+      14) sudo ./setupIntrusionDetection.sh;;
       *) 
         echo "Invalid option. ";
         continue;;
