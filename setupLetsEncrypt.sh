@@ -153,7 +153,7 @@ relink() {
     do 
        ln -s \$f /etc/apache2/sites-enabled/ 
     done
-    rm /etc/apache2/sites-enabled/100-\*.conf
+    #rm /etc/apache2/sites-enabled/100-\*.conf
     /etc/init.d/apache2 reload
 }
 
@@ -172,6 +172,7 @@ stop() {
 }
 
 monitor() {
+    set +e
     if [ ! -f /home/letsencrypt/sites ]; then
         mkdir -p /home/letsencrypt/sites
         chown letsencrypt:www-data /home/letsencrypt/sites
