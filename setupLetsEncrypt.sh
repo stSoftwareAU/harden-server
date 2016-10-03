@@ -14,12 +14,16 @@ addUser( ) {
 
 fetchFiles() {
     cd /home/letsencrypt/
-    wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/acme_tiny.py > acme_tiny.py
-
+    if [ ! -f acme-cluster ]; then
+        git clone https://github.com/stSoftwareAU/acme-cluster.git
+    fi
+    
     if [ ! -f sync.sh ]; then
-        wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/sync.sh > sync.sh
+        ln -s acme-cluster/sync.sh . 
+    fi
 
-        chmod 700 sync.sh
+    if [ ! -f run.sh ]; then
+        ln -s acme-cluster/run.sh . 
     fi
 
     if [ ! -f domains.txt ]; then
@@ -27,10 +31,9 @@ fetchFiles() {
         chmod 600 domains.txt
     fi
 
-    wget -O - https://raw.githubusercontent.com/stSoftwareAU/acme-cluster/master/run.sh > run.sh
-    chmod 700 run.sh
-
-    chown letsencrypt:www-data *
+    find ./ -name "*.sh" -exec chmod u+x {} \; 
+    chown -R letsencrypt:www-data *
+    chmod -R go-rwx *
 }
 
 generateKeys(){
