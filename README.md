@@ -1,2 +1,2 @@
 # harden-server
-Bash script to harden stServer clusters.
+Bash scripts to harden stServer clusters.
