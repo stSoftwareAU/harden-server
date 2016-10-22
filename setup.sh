@@ -52,7 +52,7 @@ configLogwatch() {
 
     sudo sed --in-place -r 's/^[\t #]*MailTo *=.*$/MailTo = support@stsoftware.com.au/g' /tmp/logwatch.conf
     sudo sed --in-place -r 's/^[\t #]*MailFrom *=.*$/MailFrom = logwatch@$HOSTNAME/g' /tmp/logwatch.conf
-    sudo sed --in-place -r 's/^[\t ]*Range *=.*$/Range = between -7 days and -1 days/g' /tmp/logwatch.conf
+    sudo sed --in-place -r 's/^[\t ]*Range *=.*$/Range = between -7 days and Today/g' /tmp/logwatch.conf
     sudo sed --in-place -r 's/^[\t #]*Format *=.*$/Format = html/g' /tmp/logwatch.conf
     
     sudo chown root:root /tmp/logwatch.conf
