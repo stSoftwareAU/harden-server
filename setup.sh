@@ -100,7 +100,9 @@ installPackages() {
     fi
   done
 
-  sudo a2enmod ssl
+  if [ ! -f /etc/apache2/mods-enabled/ssl.conf ]; then
+     sudo a2enmod ssl
+  fi 
 }
 
 #formatDisk(){
