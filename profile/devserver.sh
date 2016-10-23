@@ -41,6 +41,12 @@ installPackages() {
         sudo add-apt-repository ppa:webupd8team/java
         sudo apt-get update;
       fi
+      if [ $p = "jenkins" ]; then
+	wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
+	sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
+        sudo apt-get update;
+      fi 
+
       sudo apt-get -y install $p
       
 #      if [ $p = 'logwatch' ]; then
