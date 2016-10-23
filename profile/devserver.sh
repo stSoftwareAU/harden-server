@@ -3,6 +3,32 @@ set -e
 
 defaults() {
   cd "$(dirname "$0")"
+
+  addGroup sts
+  addUser nigel
+  addUser lgao
+}
+
+addGroup( ) {
+  ret=false
+  sudo getent group $1 >/dev/null 2>&1 && ret=true
+
+  if $ret; then
+    echo "group '$1' exists"
+  else
+    sudo groupadd $1
+  fi
+}
+
+addUser( ) {
+    ret=false
+    sudo getent passwd $1 >/dev/null 2>&1 && ret=true
+
+    if $ret; then
+      echo "User '$1' exists"
+    else
+      sudo useradd -g sts -m -s /bin/bash $1
+    fi
 }
 
 installPackages() {
@@ -60,6 +86,16 @@ installPackages() {
   fi 
 }
 
+updateOS() {
+who=`whoami`
+sudo mkdir -p /xenv
+sudo chown -R $who:sts /xenv
+mkdir -p $HOME/backup
+rsync -rhlptvcz --progress --stats --delete --ignore-errors --force --backup --backup-dir=$HOME/backup devserver8:/xenv/ /xenv/
+
+sudo ../bin/updateOS.sh
+}
+
 menu() {
 
   title="Server Hardene"
@@ -93,7 +129,7 @@ menu() {
       1 ) installPackages;;
 #      5 ) changePostgres;;
 #      6 ) autoSSH;;
-      2 ) sudo ../bin/updateOS.sh;;
+      2 ) updateOS;;
 #      8 ) fetchInstaller;;
 #      9 ) installST;;
 #      10) setupFirewall;;
