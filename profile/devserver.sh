@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+defaults() {
+  cd "$(dirname "$0")"
+}
 
 installPackages() {
 
@@ -83,13 +86,13 @@ menu() {
       1 ) installPackages;;
 #      5 ) changePostgres;;
 #      6 ) autoSSH;;
-      2 ) updateOS;;
+      2 ) sudo ../bin/updateOS.sh;;
 #      8 ) fetchInstaller;;
 #      9 ) installST;;
 #      10) setupFirewall;;
 #      11) sudo ./setupApache.sh;;
 #      12) sudo ./setupLetsEncrypt.sh;;
-#      13) sudo ./setupTimezone.sh;;
+      3) sudo ../setupTimezone.sh;;
 #      14) sudo ./setupIntrusionDetection.sh;;
       *) 
         echo "Invalid option. ";
