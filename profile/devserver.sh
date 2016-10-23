@@ -36,11 +36,12 @@ installPackages() {
   do
     if  apt-cache policy $p|grep "Installed:" | grep "(none)"; then
       echo "Install: $p"
-      if [ $p = 'java8' ]; then
+      if [ $p = 'oracle-java8-installer' ]; then
+        echo "adding ppa:webupd8team/java..."
         sudo add-apt-repository ppa:webupd8team/java
         sudo apt-get update;
       fi
-      sudo apt-get install $p
+      sudo apt-get -y install $p
       
 #      if [ $p = 'logwatch' ]; then
 #          sudo ./setupLogwatch.sh
