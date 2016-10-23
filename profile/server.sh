@@ -368,10 +368,20 @@ setupFirewall() {
   echo "sshd: $LOCAL_SUBNET      #Local "  >> $hostsAllowTemp
   echo "sshd: 60.241.239.222  #ST Office iinet" >> $hostsAllowTemp
   echo "sshd: 58.108.224.217  #ST Office optus" >> $hostsAllowTemp
+
   echo "sshd: 101.0.96.194    #ST www1" >> $hostsAllowTemp
   echo "sshd: 101.0.106.2     #ST www2" >> $hostsAllowTemp
   echo "sshd: 101.0.80.130    #ST www3" >> $hostsAllowTemp
-  
+  echo "sshd: 101.0.92.206    #ST www4" >> $hostsAllowTemp  
+
+  echo "sshd: 172.16.23.234   #ST www1 (internal)" >> $hostsAllowTemp  
+  echo "sshd: 172.16.8.186    #ST www2 (internal)" >> $hostsAllowTemp  
+  echo "sshd: 172.16.41.26    #ST www3 (internal)" >> $hostsAllowTemp  
+  echo "sshd: 101.0.92.206    #ST www4 (internal)" >> $hostsAllowTemp  
+  echo "sshd: 58.106.         #ST Nigel home Optus" >> $hostsAllowTemp  
+  echo "sshd: 101.0.100.18    #ST DP support" >> $hostsAllowTemp  
+  echo "sshd: 101.0.101.203   #ST DP support" >> $hostsAllowTemp  
+
   hostsDenyTemp=$(mktemp /tmp/hosts.deny.XXXXXX)
   cat /etc/hosts.deny | egrep -v "sshd" > $hostsDenyTemp
   echo "sshd: ALL" >> $hostsDenyTemp
