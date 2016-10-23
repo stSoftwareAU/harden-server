@@ -13,6 +13,8 @@ addGroup( ) {
 }
 
 addUser( ) {
+  user=$1
+  if [[ $user = *[!\ ]* ]]; then
     ret=false
     sudo getent passwd $1 >/dev/null 2>&1 && ret=true
 
@@ -21,6 +23,7 @@ addUser( ) {
     else
       sudo useradd -g www-data -m -s /bin/bash $1
     fi
+  fi
 }
 
 
@@ -133,6 +136,8 @@ stepGroups() {
 stepUsers() {
   addUser 'docmgr';
   addUser 'webapps';
+  addUser $PROD_USER;
+  addUser $UAT_USER;
 }
 
 fetchInstaller(){
