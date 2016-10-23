@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+cd "$(dirname "$0")"
 mkdir -p /home/webapps/apache
 
 openssl version > /tmp/openssl.version
@@ -41,11 +42,14 @@ if ! grep -q "Header .* Strict-Transport-Security" /etc/apache2/sites-enabled/00
     echo ""
 fi 
 
-if [ ! -f /home/webapps/apache/httpd-jk.conf ]; then
-  cp /etc/libapache2-mod-jk/httpd-jk.conf /home/webapps/apache/
-  rm /etc/libapache2-mod-jk/httpd-jk.conf
-  ln -s /home/webapps/apache/httpd-jk.conf /etc/libapache2-mod-jk/
-fi
+#if [ ! -f /home/webapps/apache/httpd-jk.conf ]; then
+#  cp /etc/libapache2-mod-jk/httpd-jk.conf /home/webapps/apache/
+#  rm /etc/libapache2-mod-jk/httpd-jk.conf
+#  ln -s /home/webapps/apache/httpd-jk.conf /etc/libapache2-mod-jk/
+#fi
+
+sudo rm /etc/apache2/mods-enabled/jk.conf
+sudo cp apache2/mods-enabled/jk.conf /etc/apache2/mods-enabled/jk.conf
 
 if [ ! -f /home/webapps/apache/workers.properties ]; then
   cp /etc/libapache2-mod-jk/workers.properties /home/webapps/apache/
