@@ -22,27 +22,7 @@ addUser( ) {
       sudo useradd -g www-data -m -s /bin/bash $1
     fi
 }
-updateOS() {
-  set -e
-  cd 
 
-  tmpfile=$(mktemp /tmp/pg_pass.XXXXXX)
-  
-  cat >$tmpfile << EOF
-apt-get update
-apt-get upgrade -y
-apt-get autoclean
-apt-get dist-upgrade
-apt-get check
-apt-get autoremove
-update-grub
-EOF
-  chmod 777 $tmpfile
-  sudo  $tmpfile
-  rm $tmpfile
-  
-  
-}
 
 installPackages() {
 
@@ -362,6 +342,8 @@ EOF
 }
 
 defaults() {
+  cd "$(dirname "$0")"
+   
   if [ -f  ~/env.sh ]; then
     . ~/env.sh
   fi
@@ -469,14 +451,14 @@ menu() {
       4 ) installPackages;;
       5 ) changePostgres;;
       6 ) autoSSH;;
-      7 ) updateOS;;
+      7 ) sudo ../bin/updateOS.sh;;
       8 ) fetchInstaller;;
       9 ) installST;;
       10) setupFirewall;;
-      11) sudo ./setupApache.sh;;
-      12) sudo ./setupLetsEncrypt.sh;;
-      13) sudo ./setupTimezone.sh;;
-      14) sudo ./setupIntrusionDetection.sh;;
+      11) sudo ../setupApache.sh;;
+      12) sudo ../setupLetsEncrypt.sh;;
+      13) sudo ../setupTimezone.sh;;
+      14) sudo ../setupIntrusionDetection.sh;;
       *) 
         echo "Invalid option. ";
         continue;;
