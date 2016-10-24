@@ -453,7 +453,7 @@ menu() {
 
   title="Server Hardene"
   prompt="Pick an option:"
-  options=( "Configure" "Create groups" "Create users" "Install packages" "Change Postgres PW" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST @sudo" "Firewall" "Apache" "Lets Encrypt" "Timezone" "Intrusion Detection")
+  options=( "Configure" "Create groups" "Create users" "Install packages" "Change Postgres PW" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST" "Firewall" "Apache" "Lets Encrypt" "Timezone" "Intrusion Detection")
 
   echo "$title"
   PS3="$prompt "
