@@ -306,7 +306,22 @@ menu() {
 
   title="Server Hardene"
   prompt="Pick an option:"
-  options=( "Configure" "Create groups" "Create users" "Install packages" "Change Postgres PW" "SSH auto login" "Update OS/Scripts" "fetch Installer" "InstallST" "Firewall" "Apache" "Lets Encrypt" "Timezone" "Intrusion Detection")
+  options=(
+      "Configure"
+      "Create groups"
+      "Create users"
+      "Install packages"
+      "Change Postgres PW"
+      "SSH auto login"
+      "Update OS/Scripts"
+      "fetch Installer"
+      "Install ST"
+      "Firewall"
+      "Apache"
+      "Lets Encrypt"
+      "Timezone"
+      "Intrusion Detection"
+)
 
   echo "$title"
   PS3="$prompt "
@@ -322,7 +337,7 @@ menu() {
       6 ) autoSSH;;
       7 ) sudo ../bin/updateOS.sh;;
       8 ) fetchInstaller;;
-      9 ) installST;;
+      9 ) sudo ../bin/installST.sh $PROD_USER;;
       10) setupFirewall;;
       11) sudo ../setupApache.sh;;
       12) sudo ../setupLetsEncrypt.sh;;
