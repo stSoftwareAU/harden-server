@@ -1,15 +1,21 @@
 #!/bin/bash
 set -e
 
+USER=$1
+if [[ ! $USER = *[!\ ]* ]]; then
+    echo "blank USER"
+    exit
+fi
+
 installST(){
   if (( $EUID != 0 )); then
     echo "Please run as root"
     exit
   fi
 
-  sed --in-place='.bak' -r 's/^[\t #]*workers.tomcat_home=.*$/workers.tomcat_home=\/home\/webapps\/${PREFIX}Server\/server\//g' /etc/libapache2-mod-jk/workers.properties
+  sed --in-place='.bak' -r 's/^[\t #]*workers.tomcat_home=.*$/workers.tomcat_home=\/home\/${USER}\/${PREFIX}Server\/server\//g' /etc/libapache2-mod-jk/workers.properties
 
-  cat << EOF1 > /home/webapps/install.sh
+  cat << EOF1 > /home/${USER}/install.sh
 #!/bin/bash
 set -e
 cd 
@@ -40,24 +46,24 @@ fi
 ln -s ${PREFIX}Server\$today ${PREFIX}Server
 EOF1
 
-  chmod 700 /home/webapps/install.sh
-  chown webapps:www-data /home/webapps/install.sh
-  su -c "/home/webapps/install.sh" -l webapps
+  chmod 700 /home/${USER}/install.sh
+  chown ${USER}:www-data /home/${USER}/install.sh
+  su -c "/home/${USER}/install.sh" -l ${USER}
 
-  if [ ! -f /home/webapps/stop.sh ]; then
-    cat << EOF2 > /home/webapps/stop.sh
+  if [ ! -f /home/${USER}/stop.sh ]; then
+    cat << EOF2 > /home/${USER}/stop.sh
 #!/bin/bash
 
 kill -9 `ps -ef |grep java|grep -v grep |grep ${PREFIX}Server| cut -c 10-15,16-20` > /dev/null 2>&1
 
 EOF2
 
-    chmod 700 /home/webapps/stop.sh
-    chown webapps:www-data /home/webapps/stop.sh
+    chmod 700 /home/${USER}/stop.sh
+    chown ${USER}:www-data /home/${USER}/stop.sh
   fi
 
-  if [ ! -f /home/webapps/start.sh ]; then
-    cat << EOF > /home/webapps/start.sh
+  if [ ! -f /home/${USER}/start.sh ]; then
+    cat << EOF > /home/${USER}/start.sh
 #!/bin/bash
 cd 
 mkdir -p logs
@@ -92,8 +98,8 @@ nohup ./server.sh &
 
 EOF
 
-    chmod 700 /home/webapps/start.sh
-    chown webapps:www-data /home/webapps/start.sh
+    chmod 700 /home/${USER}/start.sh
+    chown ${USER}:www-data /home/${USER}/start.sh
   fi
 
   if [ ! -f /etc/init.d/stSoftware ]; then
@@ -112,11 +118,11 @@ EOF
 ### END INIT INFO
 
 start() {
-  (sleep 60 && sudo -u webapps -i /home/webapps/start.sh ) > /var/log/stSoftware.log 2>&1 &
+  (sleep 60 && sudo -u ${USER} -i /home/${USER}/start.sh ) > /var/log/stSoftware.log 2>&1 &
 }
 
 stop() {
-  sudo -u webapps -i /home/webapps/stop.sh
+  sudo -u ${USER} -i /home/${USER}/stop.sh
 }
 
 case "\$1" in 
