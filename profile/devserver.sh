@@ -55,6 +55,7 @@ installPackages() {
     "vim"
     "jenkins"
     "meld"
+    "ffmpeg"
   )
  
   ## now loop through the above array
