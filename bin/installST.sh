@@ -1,4 +1,5 @@
-#!/usr/bash
+#!/bin/bash
+set -e
 
 installST(){
   if (( $EUID != 0 )); then
