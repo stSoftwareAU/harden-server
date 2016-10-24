@@ -54,7 +54,7 @@ installPackages() {
   do
     if  apt-cache policy $p|grep "Installed:" | grep "(none)"; then
       echo "Install: $p"
-      if [ $p = 'java8' ]; then
+      if [ $p = 'oracle-java8-installer' ]; then
         sudo add-apt-repository ppa:webupd8team/java
         sudo apt-get update;
       fi
@@ -148,7 +148,7 @@ fetchInstaller(){
   fi
   set -e
 
-  rsync -hlptvcz --progress --stats www1.stsoftware.com.au:/home/jenkins/release/${PREFIX}Installer.jar /tmp/
+  rsync -hlptvcz --progress --stats www3.stsoftware.com.au:/home/jenkins/release/${PREFIX}Installer.jar /tmp/
   chmod ugo+r /tmp/${PREFIX}Installer.jar
 }
 
