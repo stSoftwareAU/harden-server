@@ -31,7 +31,7 @@ installPackages() {
 
   ## list of packages
   packagelist=(
-    "ffmpeg"
+    "ffmpeg" # audio conversion
     "fail2ban" 
     "openssh-server" 
     "apache2"
