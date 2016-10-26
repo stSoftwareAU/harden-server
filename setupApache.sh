@@ -56,7 +56,7 @@ if [ ! -f /home/webapps/apache/workers.properties ]; then
   rm /etc/libapache2-mod-jk/workers.properties
   ln -s /home/webapps/apache/workers.properties /etc/libapache2-mod-jk/
 fi
-chown -R webapps:www-data /home/webapps/apache
+chgrp -R www-data /home/webapps/apache
 chmod -R go-wrx /home/webapps/apache
 a2enmod headers
 a2enmod ssl

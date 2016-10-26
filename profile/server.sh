@@ -96,6 +96,7 @@ changePostgres(){
   
   cat >$tmpfile << EOF
 echo "alter user postgres with password '$PG_PASS';"|psql -d postgres -U postgres
+  echo "update aspc_server set new_passwd='$PG_PASS'"|psql -U postgres aspc_master
 EOF
   chmod 777 $tmpfile
   sudo su - postgres -c $tmpfile
