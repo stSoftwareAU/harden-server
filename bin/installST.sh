@@ -1,13 +1,18 @@
 #!/bin/bash
 set -e
 
-USER=$1
+PREFIX=$1
+if [[ ! $PREFIX = *[!\ ]* ]]; then
+    echo "blank PREFIX"
+    exit
+fi
+
+USER=$2
 if [[ ! $USER = *[!\ ]* ]]; then
     echo "blank USER"
     exit
 fi
 
-installST(){
   if (( $EUID != 0 )); then
     echo "Please run as root"
     exit
@@ -153,4 +158,4 @@ EOF
     ln -s /etc/init.d/stSoftware /etc/rc3.d/S99stSoftware
   fi
 
-}
+

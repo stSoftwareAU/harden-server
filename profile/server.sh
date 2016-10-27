@@ -338,7 +338,7 @@ menu() {
       6 ) autoSSH;;
       7 ) sudo ../bin/updateOS.sh;;
       8 ) fetchInstaller;;
-      9 ) sudo ../bin/installST.sh $PROD_USER;;
+      9 ) sudo ../bin/installST.sh $PREFIX $PROD_USER;;
       10) setupFirewall;;
       11) sudo ../setupApache.sh;;
       12) sudo ../setupLetsEncrypt.sh;;
