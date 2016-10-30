@@ -27,5 +27,5 @@ IGNORE_IPS="(58\.108\.224\.217|60\.241\.239\.222|58\.106\.70\.111|203\.206\.176\
 #tail --lines=10000 -f /home/edge/$LOG | grep " .php"|  awk -F\" -f /home/nigel/bin/scan.awk
 #tail --lines=10000 -f /home/edge/$LOG /home/agile/www1$LOG /home/agile/www2$LOG|grep "benloane.stsoftware.com.a"|grep -iv linux
 
-sudo tail --lines=10000 -f $LOG |egrep -iv "$IGNORE_USERS"|egrep -iv "$IGNORE_IPS"|egrep -iv "$IGNORE_REF" |egrep -iv "$IGNORE_SITES"|egrep -iv "$IGNORE_RESOURCES"| egrep -iv "$IGNORE_BOTS"|egrep -iv "$IGNORE_PROPFIND"|  awk -F\" -f scan.awk
+tail --lines=10000 -f $LOG |egrep -iv "$IGNORE_USERS"|egrep -iv "$IGNORE_IPS"|egrep -iv "$IGNORE_REF" |egrep -iv "$IGNORE_SITES"|egrep -iv "$IGNORE_RESOURCES"| egrep -iv "$IGNORE_BOTS"|egrep -iv "$IGNORE_PROPFIND"|  awk -F\" -f scan.awk
 
