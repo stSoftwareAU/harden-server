@@ -13,9 +13,7 @@ addGroup( ) {
   ret=false
   sudo getent group $1 >/dev/null 2>&1 && ret=true
 
-  if $ret; then
-    echo "group '$1' exists"
-  else
+  if ! $ret; then
     sudo groupadd $1
   fi
 }
@@ -24,9 +22,7 @@ addUser( ) {
     ret=false
     sudo getent passwd $1 >/dev/null 2>&1 && ret=true
 
-    if $ret; then
-      echo "User '$1' exists"
-    else
+    if ! $ret; then
       sudo useradd -g sts -m -s /bin/bash $1
     fi
 }
@@ -38,6 +34,11 @@ installPackages() {
 #    "postfix"
 #    "mailutils"
 #    "logwatch"    
+    "php-dev"
+    "php"
+    "libapache2-mod-php"
+    "php-mcrypt"
+    "php-postgres"
     "google-chrome-stable" 
     "fail2ban" 
     "openssh-server" 
@@ -76,9 +77,9 @@ installPackages() {
 
       sudo apt-get -y install $p
       
-#      if [ $p = 'logwatch' ]; then
-#          sudo ./setupLogwatch.sh
-#      fi
+      if [ $p = 'php-dev' ]; then
+          sudo pecl install xdebug
+      fi
     fi
   done
 
@@ -92,14 +93,14 @@ who=`whoami`
 sudo mkdir -p /xenv
 sudo chown -R $who:sts /xenv
 mkdir -p $HOME/backup
-rsync -rhlptvcz --progress --stats --delete --ignore-errors --force --backup --backup-dir=$HOME/backup devserver8:/xenv/ /xenv/
+#rsync -rhlptvcz --progress --stats --delete --ignore-errors --force --backup --backup-dir=$HOME/backup devserver8:/xenv/ /xenv/
 
 sudo ../bin/updateOS.sh
 }
 
 menu() {
 
-  title="Server Hardene"
+  title="setup DEVSERVER"
   prompt="Pick an option:"
   options=( 
 #    "Configure" 
