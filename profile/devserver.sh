@@ -92,10 +92,20 @@ updateOS() {
 who=`whoami`
 sudo mkdir -p /xenv
 sudo chown -R $who:sts /xenv
-mkdir -p $HOME/backup
+#mkdir -p $HOME/backup
 #rsync -rhlptvcz --progress --stats --delete --ignore-errors --force --backup --backup-dir=$HOME/backup devserver8:/xenv/ /xenv/
 
-sudo ../bin/updateOS.sh
+    if [ ! -d /xenv/.git ]; then
+      
+       rm -fr /xenv/*
+       git clone git@github.com:stSoftwareAU/xenv.git /xenv
+    fi
+    CWD="cd `pwd`"
+    cd /xenv/
+    git pull
+    
+    $CWD
+    sudo ../bin/updateOS.sh
 }
 
 menu() {
