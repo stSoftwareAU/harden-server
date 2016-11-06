@@ -31,6 +31,7 @@ installPackages() {
 
   ## list of packages
   packagelist=(
+    #"ssmtp"  email alerts
     "ffmpeg" # audio conversion
     "fail2ban" 
     "openssh-server" 
