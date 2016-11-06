@@ -139,6 +139,7 @@ stepGroups() {
 stepUsers() {
   addUser 'docmgr';
   addUser 'webapps';
+  addUser 'jenkins';
   addUser $PROD_USER;
   addUser $UAT_USER;
 }
