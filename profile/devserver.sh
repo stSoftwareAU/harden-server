@@ -39,6 +39,7 @@ installPackages() {
     "libapache2-mod-php"
     "php-mcrypt"
     "php-postgres"
+    "php-pgsql"
     "google-chrome-stable" 
     "fail2ban" 
     "openssh-server" 
