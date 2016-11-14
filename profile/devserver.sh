@@ -81,6 +81,9 @@ installPackages() {
       if [ $p = 'php-dev' ]; then
           sudo pecl install xdebug
       fi
+      if [ $p = 'ntp' ]; then
+          sudo ../setupTimezone.sh
+      fi
     fi
   done
 
@@ -126,7 +129,7 @@ menu() {
 #    "Firewall" 
 #    "Apache" 
 #    "Lets Encrypt" 
-    "Timezone" 
+#    "Timezone" 
 #    "Intrusion Detection"
     )
 
@@ -148,7 +151,7 @@ menu() {
 #      10) setupFirewall;;
 #      11) sudo ./setupApache.sh;;
 #      12) sudo ./setupLetsEncrypt.sh;;
-      3) sudo ../setupTimezone.sh;;
+#      3) sudo ../setupTimezone.sh;;
 #      14) sudo ./setupIntrusionDetection.sh;;
       *) 
         echo "Invalid option. ";
