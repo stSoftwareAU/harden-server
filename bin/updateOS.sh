@@ -8,3 +8,8 @@ sudo apt-get dist-upgrade
 sudo apt-get check
 sudo apt-get autoremove
 sudo update-grub
+
+if [ -f /etc/init.d/php7.0-fpm ]; then
+
+  sudo /etc/init.d/php7.0-fpm restart
+fi
