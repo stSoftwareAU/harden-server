@@ -14,14 +14,15 @@ addGroup( ) {
 
 addUser( ) {
   user=$1
+  group=$2
   if [[ $user = *[!\ ]* ]]; then
     ret=false
     sudo getent passwd $1 >/dev/null 2>&1 && ret=true
 
     if $ret; then
       echo "User '$1' exists"
-    else
-      sudo useradd -g www-data -m -s /bin/bash $1
+    else if [[ $group = *[!\ ]* ]]; then
+      sudo useradd -g $group -m -s /bin/bash $1
     fi
   fi
 }
@@ -137,11 +138,14 @@ stepGroups() {
 }
 
 stepUsers() {
-  addUser 'docmgr';
-  addUser 'webapps';
-  addUser 'jenkins';
-  addUser $PROD_USER;
-  addUser $UAT_USER;
+  addUser 'docmgr' 'www-data';
+  addUser 'webapps' 'www-data';
+  addUser 'jenkins' 'www-data';
+  addUser '$PROD_USER' 'www-data';
+  addUser '$UAT_USER' 'www-data';
+  addUser 'nigel' 'sudo' 'nigel@stsoftware.com.au';
+  addUser 'lgao' 'sudo' 'lei@stsoftware.com.au';
+  addUser 'jwiggins' 'sudo' 'jonathan@whizz-bang.com.au'
 }
 
 fetchInstaller(){
