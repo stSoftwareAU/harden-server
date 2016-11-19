@@ -114,6 +114,7 @@ stepUsers() {
   ../bin/create_user.sh docmgr www-data;
   ../bin/create_user.sh webapps www-data;
   ../bin/create_user.sh jenkins www-data;
+  ../bin/create_user.sh support;
   ../bin/create_user.sh $PROD_USER www-data;
   ../bin/create_user.sh $UAT_USER www-data;
   ../bin/create_user.sh nigel sudo nigel@stsoftware.com.au;
