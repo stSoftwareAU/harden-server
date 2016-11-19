@@ -84,6 +84,13 @@ installPackages() {
       if [ $p = 'ntp' ]; then
           sudo ../setupTimezone.sh
       fi
+      
+      if [ $p = 'vim' ]; then
+         if [ ! -f ~/.vimrc ]; then
+            echo "set modelines=1" > ~/.vimrc
+            echo "set nocompatible" >> ~/.vimrc
+         fi
+      fi
     fi
   done
 

@@ -1,33 +1,6 @@
 #!/bin/bash
 set -e
 
-addGroup( ) {
-  ret=false
-  sudo getent group $1 >/dev/null 2>&1 && ret=true
-
-  if $ret; then
-    echo "group '$1' exists"
-  else
-    sudo groupadd $1
-  fi
-}
-
-addUser( ) {
-  user=$1
-  group=$2
-  if [[ $user = *[!\ ]* ]]; then
-    ret=false
-    sudo getent passwd $1 >/dev/null 2>&1 && ret=true
-
-    if $ret; then
-      echo "User '$1' exists"
-    else if [[ $group = *[!\ ]* ]]; then
-      sudo useradd -g $group -m -s /bin/bash $1
-    fi
-  fi
-}
-
-
 installPackages() {
 
   ## list of packages
@@ -138,14 +111,14 @@ stepGroups() {
 }
 
 stepUsers() {
-  addUser 'docmgr' 'www-data';
-  addUser 'webapps' 'www-data';
-  addUser 'jenkins' 'www-data';
-  addUser '$PROD_USER' 'www-data';
-  addUser '$UAT_USER' 'www-data';
-  addUser 'nigel' 'sudo' 'nigel@stsoftware.com.au';
-  addUser 'lgao' 'sudo' 'lei@stsoftware.com.au';
-  addUser 'jwiggins' 'sudo' 'jonathan@whizz-bang.com.au'
+  ../bin/create_user.sh 'docmgr' 'www-data';
+  ../bin/create_user.sh 'webapps' 'www-data';
+  ../bin/create_user.sh 'jenkins' 'www-data';
+  ../bin/create_user.sh '$PROD_USER' 'www-data';
+  ../bin/create_user.sh '$UAT_USER' 'www-data';
+  ../bin/create_user.sh 'nigel' 'sudo' 'nigel@stsoftware.com.au';
+  ../bin/create_user.sh 'lgao' 'sudo' 'lei@stsoftware.com.au';
+  ../bin/create_user.sh 'jwiggins' 'sudo' 'jonathan@whizz-bang.com.au'
 }
 
 fetchInstaller(){
