@@ -24,13 +24,13 @@ if [[ $user = *[!\ ]* ]]; then
         extG="";
         if [[ $group = *[!\ ]* ]]; then
             addGroup '$group';
-            extG="--groups '$group'"
+            extG="--groups $group"
         fi
 
         extPW=''
         if [[ $email = *[!\ ]* ]]; then 
            pass=`openssl rand -base64 12`
-           extPW="--password '$pass'"
+           extPW="--password $pass"
         fi
 
         cmd="sudo useradd $extPW $extG --create-home -s /bin/bash $user"
