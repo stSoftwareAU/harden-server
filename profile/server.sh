@@ -22,6 +22,7 @@ installPackages() {
     "unattended-upgrades"
     "logwatch"
     "ntp"
+    "ca-certificates-java"
   )
 
   ## now loop through the above array
