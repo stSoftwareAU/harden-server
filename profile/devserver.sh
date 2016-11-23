@@ -3,10 +3,13 @@ set -e
 
 defaults() {
   cd "$(dirname "$0")"
-
-  addGroup sts
-  addUser nigel
-  addUser lgao
+  
+  ../bin/create_user.sh support;
+  ../bin/create_user.sh nigel sudo nigel@stsoftware.com.au;
+  ../bin/create_user.sh lgao sudo lei@stsoftware.com.au;
+  ../bin/create_user.sh harry sudo harry@stsoftware.com.au;
+  ../bin/create_user.sh william sudo william@stsoftware.com.au;
+  ../bin/create_user.sh parminder sudo parminder@stsoftware.com.au;
 }
 
 addGroup( ) {
@@ -16,15 +19,6 @@ addGroup( ) {
   if ! $ret; then
     sudo groupadd $1
   fi
-}
-
-addUser( ) {
-    ret=false
-    sudo getent passwd $1 >/dev/null 2>&1 && ret=true
-
-    if ! $ret; then
-      sudo useradd -g sts -m -s /bin/bash $1
-    fi
 }
 
 installPackages() {
