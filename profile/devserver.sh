@@ -4,12 +4,6 @@ set -e
 defaults() {
   cd "$(dirname "$0")"
   
-  ../bin/create_user.sh support;
-  ../bin/create_user.sh nigel sudo nigel@stsoftware.com.au;
-  ../bin/create_user.sh lgao sudo lei@stsoftware.com.au;
-  ../bin/create_user.sh harry sudo harry@stsoftware.com.au;
-  ../bin/create_user.sh william sudo william@stsoftware.com.au;
-  ../bin/create_user.sh parminder sudo parminder@stsoftware.com.au;
 }
 
 addGroup( ) {
@@ -52,6 +46,7 @@ installPackages() {
     "jenkins"
     "meld"
     "ffmpeg"
+    "mailutils"
   )
  
   ## now loop through the above array
@@ -94,23 +89,30 @@ installPackages() {
 }
 
 updateOS() {
-who=`whoami`
-sudo mkdir -p /xenv
-sudo chown -R $who:sts /xenv
-#mkdir -p $HOME/backup
-#rsync -rhlptvcz --progress --stats --delete --ignore-errors --force --backup --backup-dir=$HOME/backup devserver8:/xenv/ /xenv/
+	who=`whoami`
+	sudo mkdir -p /xenv
+	sudo chown -R $who:sts /xenv
+	#mkdir -p $HOME/backup
+	#rsync -rhlptvcz --progress --stats --delete --ignore-errors --force --backup --backup-dir=$HOME/backup devserver8:/xenv/ /xenv/
 
-    if [ ! -d /xenv/.git ]; then
-      
-       rm -fr /xenv/*
-       git clone git@github.com:stSoftwareAU/xenv.git /xenv
-    fi
-    CWD="cd `pwd`"
-    cd /xenv/
-    git pull
-    
-    $CWD
-    sudo ../bin/updateOS.sh
+	../bin/create_user.sh support;
+	../bin/create_user.sh nigel sudo nigel@stsoftware.com.au;
+	../bin/create_user.sh lgao sudo lei@stsoftware.com.au;
+	../bin/create_user.sh harry sudo harry@stsoftware.com.au;
+	../bin/create_user.sh william sudo william@stsoftware.com.au;
+	../bin/create_user.sh parminder sudo parminder@stsoftware.com.au;
+
+	if [ ! -d /xenv/.git ]; then
+
+	rm -fr /xenv/*
+	git clone git@github.com:stSoftwareAU/xenv.git /xenv
+	fi
+	CWD="cd `pwd`"
+	cd /xenv/
+	git pull
+
+	$CWD
+	sudo ../bin/updateOS.sh
 }
 
 menu() {
@@ -165,3 +167,6 @@ menu() {
 defaults;
 
 menu;
+
+# vim: set ts=4 sw=4 sts=4 et:
+
