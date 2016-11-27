@@ -115,58 +115,9 @@ updateOS() {
 	sudo ../bin/updateOS.sh
 }
 
-menu() {
-
-  title="setup DEVSERVER"
-  prompt="Pick an option:"
-  options=( 
-#    "Configure" 
-#    "Create groups" 
-#    "Create users" 
-    "Install packages" 
-#    "Change Postgres PW" 
-#    "SSH auto login" 
-    "Update OS/Scripts" 
-#    "fetch Installer" 
-#    "InstallST @sudo" 
-#    "Firewall" 
-#    "Apache" 
-#    "Lets Encrypt" 
-#    "Timezone" 
-#    "Intrusion Detection"
-    )
-
-  echo "$title"
-  PS3="$prompt "
-  select opt in "${options[@]}" ; do
-
-    case "$REPLY" in
-
-#      1 ) stepConfigure;;
-#      2 ) stepGroups;;
-#      3 ) stepUsers;;
-      1 ) installPackages;;
-#      5 ) changePostgres;;
-#      6 ) autoSSH;;
-      2 ) updateOS;;
-#      8 ) fetchInstaller;;
-#      9 ) installST;;
-#      10) setupFirewall;;
-#      11) sudo ./setupApache.sh;;
-#      12) sudo ./setupLetsEncrypt.sh;;
-#      3) sudo ../setupTimezone.sh;;
-#      14) sudo ./setupIntrusionDetection.sh;;
-      *) 
-        echo "Invalid option. ";
-        continue;;
-    esac
-    break
-  done
-}
-
 defaults;
-
-menu;
+installPackages;
+updateOS;
 
 # vim: set ts=4 sw=4 sts=4 et:
 
