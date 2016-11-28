@@ -16,7 +16,9 @@ addGroup( ) {
 }
 
 installPackages() {
-
+  ## do not ask if you want to install a package for apt-get command
+  export DEBIAN_FRONTEND=noninteractive
+  
   ## list of packages
   packagelist=(
 #    "postfix"
