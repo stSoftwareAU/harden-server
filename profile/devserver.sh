@@ -49,6 +49,7 @@ installPackages() {
     "meld"
     "ffmpeg"
     "mailutils"
+    "maven"
   )
  
   ## now loop through the above array
