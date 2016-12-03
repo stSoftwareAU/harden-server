@@ -15,7 +15,7 @@ addUser( ) {
 fetchFiles() {
     cd /home/letsencrypt/
     if [ ! -f acme-cluster ]; then
-        git clone https://github.com/stSoftwareAU/acme-cluster.git
+        git clone git@github.com:stSoftwareAU/acme-cluster.git
     fi
     
     if [ ! -f sync.sh ]; then
