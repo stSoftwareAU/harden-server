@@ -50,6 +50,7 @@ installPackages() {
     "ffmpeg"
     "mailutils"
     "maven"
+    "tmux"
   )
  
   ## now loop through the above array
