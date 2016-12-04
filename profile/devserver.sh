@@ -121,7 +121,7 @@ updateOS() {
 jenkins(){
 
     conf='/etc/default/jenkins'
-    if [[ 'grep 'HTTP_PORT=8080' $conf ]];then
+    if grep -q -e "HTTP_PORT=8080" "$conf"; then
         sudo sed --in-place -r 's/^[\t #]*HTTP_PORT=8080.*$/HTTP_PORT=9090/g' $conf
 
         sudo /etc/init.d/jenkins restart
