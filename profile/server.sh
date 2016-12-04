@@ -23,7 +23,6 @@ installPackages() {
     "logwatch"
     "ntp"
     "ca-certificates-java"
-    "tmux"
   )
 
   ## now loop through the above array
