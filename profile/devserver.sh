@@ -28,8 +28,8 @@ installPackages() {
     "php"
     "libapache2-mod-php"
     "php-mcrypt"
-    "php-postgres"
-    "php-pgsql"
+#    "php-postgres"
+#    "php-pgsql"
     "google-chrome-stable" 
     "fail2ban" 
     "openssh-server" 
@@ -52,10 +52,29 @@ installPackages() {
     "maven"
   )
  
+  #dpkg --get-selections > /tmp/packages.txt
   ## now loop through the above array
   for p in "${packagelist[@]}"
   do
-    if  apt-cache policy $p|grep "Installed:" | grep "(none)"; then
+
+#set +e
+#    echo "$p"
+#    grep "$p	*install" /tmp/packages.txt
+#    grep -q "$p	*install" /tmp/packages.txt
+    var=0
+   apt-cache policy $p|grep "Installed:" >/tmp/pstatus
+   if [ -s /tmp/pstatus ] 
+   then
+    if grep -q "(none)" /tmp/pstatus; then
+       var=1
+    fi
+   else 
+      var=2
+   fi
+#    echo "$p = $var"
+#exit
+#set -e
+    if [ $var -ne 0 ] ; then
       echo "Install: $p"
       if [ $p = 'oracle-java8-installer' ]; then
         echo "adding ppa:webupd8team/java..."
@@ -65,6 +84,12 @@ installPackages() {
       if [ $p = "jenkins" ]; then
 	wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
 	sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
+        sudo apt-get update;
+      fi 
+
+      if [ $p = "google-chrome-stable" ]; then
+        sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list'
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
         sudo apt-get update;
       fi 
 
@@ -94,6 +119,7 @@ installPackages() {
 updateOS() {
 	who=`whoami`
 	sudo mkdir -p /xenv
+        addGroup sts;
 	sudo chown -R $who:sts /xenv
 	#mkdir -p $HOME/backup
 	#rsync -rhlptvcz --progress --stats --delete --ignore-errors --force --backup --backup-dir=$HOME/backup devserver8:/xenv/ /xenv/
