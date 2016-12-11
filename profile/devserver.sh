@@ -14,6 +14,16 @@ defaults() {
 
     sudo cp /tmp/profile $profile
   fi
+
+  hosts="/etc/hosts"
+  if ! grep -q -e "devserver8" "$hosts"; then
+      cp $hosts /tmp/hosts
+      echo "192.168.7.48	devserver7" >> /tmp/hosts
+      echo "192.168.7.58	devserver8" >> /tmp/hosts
+      echo "#60.241.239.222	devserver8" >> /tmp/hosts
+      echo "#58.108.224.217	devserver8" >> /tmp/hosts
+      sudo cp /tmp/hosts $hosts
+  fi
 }
 
 addGroup( ) {
