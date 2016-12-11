@@ -4,6 +4,13 @@ set -e
 defaults() {
   cd "$(dirname "$0")"
   
+
+  profile='/etc/profile'
+  if ! grep -q -e "/xenv/linux/x64/bashrc" "$profile"; then
+    sudo echo "if [ -f /xenv/linux/x64/bashrc ]; then" >> $profile
+    sudo echo ". /xenv/linux/x64/bashrc" >> $profile
+    sudo echo "fi" >> $profile
+  fi
 }
 
 addGroup( ) {
