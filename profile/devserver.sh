@@ -7,9 +7,12 @@ defaults() {
 
   profile='/etc/profile'
   if ! grep -q -e "/xenv/linux/x64/bashrc" "$profile"; then
-    sudo echo "if [ -f /xenv/linux/x64/bashrc ]; then" >> $profile
-    sudo echo ". /xenv/linux/x64/bashrc" >> $profile
-    sudo echo "fi" >> $profile
+    cp $profile /tmp/profile
+    echo "if [ -f /xenv/linux/x64/bashrc ]; then" >> /tmp/profile
+    echo ". /xenv/linux/x64/bashrc" >> /tmp/profile
+    echo "fi" >> /tmp/profile
+
+    sudo cp /tmp/profile $profile
   fi
 }
 
