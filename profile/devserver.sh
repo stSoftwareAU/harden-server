@@ -81,8 +81,10 @@ installPackages() {
 #    echo "$p"
 #    grep "$p	*install" /tmp/packages.txt
 #    grep -q "$p	*install" /tmp/packages.txt
-    var=0
+   var=0
+   set +e
    apt-cache policy $p|grep "Installed:" >/tmp/pstatus
+   set -e
    if [ -s /tmp/pstatus ] 
    then
     if grep -q "(none)" /tmp/pstatus; then
