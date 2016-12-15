@@ -136,6 +136,17 @@ installPackages() {
   if [ ! -f /etc/apache2/mods-enabled/ssl.conf ]; then
      sudo a2enmod ssl
   fi 
+
+  if [ ! -f /etc/apache2/mods-enabled/php7.0.conf ]; then
+     sudo a2enmod php7.0
+  fi 
+  if [ -f /etc/apache2/mods-enabled/mpm_event.conf ]; then
+     sudo a2dismod mpm_event
+  fi
+  if [ ! -f /etc/apache2/mods-enabled/mpm_prefork.conf ]; then
+     sudo a2enmod mpm_prefork
+  fi 
+  sudo /etc/init.d/apache2 reload
 }
 
 updateOS() {
