@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if (( $EUID == 0 )); then
+    echo "Please run as root"
+    exit 1
+fi
+
 defaults() {
   cd "$(dirname "$0")"
   
