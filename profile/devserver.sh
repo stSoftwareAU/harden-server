@@ -2,7 +2,7 @@
 set -e
 
 if (( $EUID == 0 )); then
-    echo "Please run as root"
+    echo "Please do not run as root."
     exit 1
 fi
 
