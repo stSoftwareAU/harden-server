@@ -232,6 +232,7 @@ setupFirewall() {
   #sudo ufw allow imap
   sudo ufw allow http
   sudo ufw allow https
+  sudo ufw allow 8080
   if [[ $WWW1_IP = *[!\ ]* ]]; then
     # Postgres
     sudo ufw allow from $WWW1_IP to any port 5432
