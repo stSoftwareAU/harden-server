@@ -192,10 +192,34 @@ jenkins(){
     fi
 }
 
+configPHP() {
+    conf='/etc/php/7.0/apache2/php.ini'
+    if ! grep -q -e "zend_extension" "$conf"; then
+        cp $conf /tmp/php.ini
+        echo "zend_extension=/usr/lib/php/20151012/xdebug.so" >> /tmp/php.ini
+        sudo cp /tmp/php.ini $conf
+    fi
+    if ! grep -q -e "xdebug.remote_enable" "$conf"; then
+        cp $conf /tmp/php.ini
+        echo "xdebug.remote_enable=On" >> /tmp/php.ini
+        sudo cp /tmp/php.ini $conf
+    fi
+    if ! grep -q -e "display_errors *= *On" "$conf"; then
+        sudo sed --in-place -r 's/^[\t ]*display_errors.*$/display_errors = On/g' $conf
+    fi
+    if ! grep -q -e "display_startup_errors *= *On" "$conf"; then
+        sudo sed --in-place -r 's/^[\t ]*display_startup_errors.*$/display_startup_errors = On/g' $conf
+    fi
+    if ! grep -q -e "track_errors *= *On" "$conf"; then
+        sudo sed --in-place -r 's/^[\t ]*track_errors.*$/track_errors = On/g' $conf
+    fi
+    sudo /etc/init.d/apache2 restart
+}
+
 jenkins;
 defaults;
 installPackages;
 updateOS;
-
+configPHP;
 # vim: set ts=4 sw=4 sts=4 et:
 
