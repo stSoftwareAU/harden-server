@@ -216,10 +216,23 @@ configPHP() {
     sudo /etc/init.d/apache2 restart
 }
 
+configPostgres() {
+    conf='/etc/postgresql/9.5/main/pg_hba.conf'
+
+    if ! sudo grep -q -e "host +all +all +127\.0\.0\.1/32 +trust" "$conf"; then
+        sudo sed --in-place -r 's/^[\t ]*host +all +all +127\.0\.0\.1\/32 +.*$/host    all             all             127.0.0.1\/32            trust/g' $conf
+        sudo /etc/init.d/postgresql restart
+    fi
+}
+
+
+
+
 jenkins;
 defaults;
 installPackages;
 updateOS;
 configPHP;
+configPostgres;
 # vim: set ts=4 sw=4 sts=4 et:
 
