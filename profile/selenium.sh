@@ -23,7 +23,7 @@ if ! sudo grep -q -e "postgres" "/etc/sudoers"; then
     sudo cp /etc/sudoers /tmp/sudoers
     sudo chmod go+rw /tmp/sudoers
 
-    echo "postgres ALL = (selenium) NOPASSWD: /home/selenium/config-selenium/tp_web.sh" >> /tmp/sudoers
+    echo "postgres ALL = (selenium) NOPASSWD: sudo /etc/init.d/postgresql restart" >> /tmp/sudoers
     sudo chmod go-rw /tmp/sudoers
     sudo cp /tmp/sudoers /etc/sudoers
 fi
