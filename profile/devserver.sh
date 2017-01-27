@@ -88,6 +88,7 @@ installPackages() {
 #    grep -q "$p	*install" /tmp/packages.txt
    var=0
    set +e
+   sudo rm -f /tmp/pstatus
    apt-cache policy $p|grep "Installed:" >/tmp/pstatus
    set -e
    if [ -s /tmp/pstatus ] 
