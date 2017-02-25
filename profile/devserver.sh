@@ -39,6 +39,7 @@ defaults() {
       echo "192.168.7.59	devserver9" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
   fi
+  sudo sed --in-place -r 's/^[\t #]*PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
 }
 
 addGroup( ) {
