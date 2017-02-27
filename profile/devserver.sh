@@ -39,7 +39,6 @@ defaults() {
       echo "192.168.7.59	devserver9" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
   fi
-  sudo sed --in-place -r 's/^[\t #]*PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
 }
 
 addGroup( ) {
@@ -149,6 +148,8 @@ installPackages() {
       fi
     fi
   done
+
+  sudo sed --in-place -r 's/^[\t #]*PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
 
   if [ ! -f /etc/apache2/mods-enabled/ssl.conf ]; then
      sudo a2enmod ssl
