@@ -189,8 +189,8 @@ updateOS() {
 	fi
 	CWD="cd `pwd`"
 	cd /xenv/
-	git pull
-
+	git fetch --all
+        git reset --hard origin/master
 	$CWD
 	sudo ../bin/updateOS.sh
 }
