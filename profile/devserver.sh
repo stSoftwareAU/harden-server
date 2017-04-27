@@ -59,6 +59,7 @@ installPackages() {
 #    "postfix"
 #    "mailutils"
 #    "logwatch"    
+    "jq"
     "php-dev"
     "php"
     "libapache2-mod-php"
