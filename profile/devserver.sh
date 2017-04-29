@@ -56,10 +56,10 @@ installPackages() {
   
   ## list of packages
   packagelist=(
+    "jq"
 #    "postfix"
 #    "mailutils"
 #    "logwatch"    
-    "jq"
     "php-dev"
     "php"
     "libapache2-mod-php"
@@ -165,7 +165,9 @@ installPackages() {
   if [ ! -f /etc/apache2/mods-enabled/mpm_prefork.conf ]; then
      sudo a2enmod mpm_prefork
   fi 
+  set +e
   sudo /etc/init.d/apache2 reload
+  set -e
 }
 
 updateOS() {
@@ -190,8 +192,8 @@ updateOS() {
 	fi
 	CWD="cd `pwd`"
 	cd /xenv/
-	git fetch --all
-        git reset --hard origin/master
+	git pull
+
 	$CWD
 	sudo ../bin/updateOS.sh
 }
