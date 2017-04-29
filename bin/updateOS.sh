@@ -6,6 +6,7 @@ sudo apt-get upgrade -y
 sudo apt-get autoclean
 sudo apt-get dist-upgrade
 sudo apt-get check
+sudo apt-get -y purge
 sudo apt-get autoremove -y
 sudo update-grub
 
