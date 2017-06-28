@@ -56,6 +56,7 @@ installPackages() {
   
   ## list of packages
   packagelist=(
+    "phantomjs"
     "jq"
 #    "postfix"
 #    "mailutils"
