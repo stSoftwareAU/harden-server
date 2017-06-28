@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+#clean up /boot directory first: remove all linux kernels that are not currently running
+dpkg -l linux-* | awk '/^ii/{ print $2}' | grep -v -e `uname -r | cut -f1,2 -d"-"` | grep -e [0-9] | grep -E "(image|headers)" | xargs sudo apt-get -y purge
+
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get autoclean

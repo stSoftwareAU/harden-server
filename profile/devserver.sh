@@ -39,6 +39,17 @@ defaults() {
       echo "192.168.7.59	devserver9" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
   fi
+
+  if ! grep -q -e "selenium1" "$hosts"; then
+      cp $hosts /tmp/hosts
+      echo "192.168.7.108	selenium1" >> /tmp/hosts
+      sudo cp /tmp/hosts $hosts
+  fi
+  if ! grep -q -e "selenium2" "$hosts"; then
+      cp $hosts /tmp/hosts
+      echo "192.168.7.91	selenium2" >> /tmp/hosts
+      sudo cp /tmp/hosts $hosts
+  fi
 }
 
 addGroup( ) {
@@ -181,7 +192,7 @@ updateOS() {
 
 	../bin/create_user.sh support;
 	../bin/create_user.sh nigel sudo nigel@stsoftware.com.au;
-	../bin/create_user.sh lgao sudo lei@stsoftware.com.au;
+	../bin/create_user.sh lei sudo lei@stsoftware.com.au;
 	../bin/create_user.sh harry sudo harry@stsoftware.com.au;
 	../bin/create_user.sh william sudo william@stsoftware.com.au;
 	../bin/create_user.sh parminder sudo parminder@stsoftware.com.au;
