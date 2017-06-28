@@ -39,6 +39,17 @@ defaults() {
       echo "192.168.7.59	devserver9" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
   fi
+
+  if ! grep -q -e "selenium1" "$hosts"; then
+      cp $hosts /tmp/hosts
+      echo "192.168.7.108	selenium1" >> /tmp/hosts
+      sudo cp /tmp/hosts $hosts
+  fi
+  if ! grep -q -e "selenium2" "$hosts"; then
+      cp $hosts /tmp/hosts
+      echo "192.168.7.91	selenium2" >> /tmp/hosts
+      sudo cp /tmp/hosts $hosts
+  fi
 }
 
 addGroup( ) {
