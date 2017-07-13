@@ -98,6 +98,7 @@ installPackages() {
     "ffmpeg"
     "mailutils"
     "maven"
+    "libxml-xpath-perl"
   )
  
   #dpkg --get-selections > /tmp/packages.txt
