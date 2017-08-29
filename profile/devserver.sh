@@ -200,11 +200,12 @@ updateOS() {
 
 	if [ ! -d /xenv/.git ]; then
 
-	rm -fr /xenv/*
-	git clone git@github.com:stSoftwareAU/xenv.git /xenv
+	   rm -fr /xenv/*
+	   git clone git@github.com:stSoftwareAU/xenv.git /xenv
 	fi
 	CWD="cd `pwd`"
 	cd /xenv/
+        git reset --hard HEAD
 	git pull
 
 	$CWD
