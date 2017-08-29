@@ -205,7 +205,7 @@ updateOS() {
 	fi
 	CWD="cd `pwd`"
 	cd /xenv/
-        git reset --hard HEAD
+        git clean -f
 	git pull
 
 	$CWD
