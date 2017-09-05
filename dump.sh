@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 confFile=$1
@@ -8,10 +7,16 @@ toExclude=()
 s3Bucket=false
 s3PutScript=""
 
-restUrl=""
+emailHost=""
+emailMagic=""
+emailTo=""
 errors=()
 
-if [ ! -z "$1" ]; then
+if [ ! -z "$confFile" ]; then
+    json=`cat $confFile`
+    email=$( jq -r '.email' <<< "${json}") 
+
+#    echo "${email}"| jq "." 
     s3PutScript=`jq -r ".s3PutScript" $confFile`
     s3Bucket=`jq -r ".s3Bucket" $confFile`
     toInclude=(`jq -r ".include[]?" $confFile`)
@@ -27,8 +32,10 @@ if [ ! -z "$1" ]; then
     fi
     echo "Bucket it = ${s3Bucket}"
 
-    restUrl=`jq -r ".email.restUrl" $confFile`
-    echo "EMAIL URL: ${restUrl}"
+    emailHost=$( jq -r '.host' <<< "${email}") 
+    emailMagic=$( jq -r '.magic' <<< "${email}") 
+    emailTo=$( jq -r '.to' <<< "${email}") 
+    echo "EMAIL HOST: ${emailHost}"
 fi
 
 
@@ -108,10 +115,13 @@ cp -a $DAILY/* $MONTHLY
 
 subject="Testing POST"
 body="<h3>Logs</>"
+#ebody=$(echo "$body" | sed 's/ /%20/g;s/</%3c/g;s/>/%3d/g');
+ebody=$(echo "$body" | sed 's/</\&lt;/g;s/>/\&gt;/g');
 
-echo $'\n'"REST: ${restUrl}"
-emailSent=$(curl -i -X POST -d "subject=${subject}?body=${body}" "${restUrl}")
-echo "${emailSent}"
+
+echo "body: ${ebody}"
+emailSent=$(curl -i -X POST -F "subject=${subject}" -F "body=${ebody}" -F "_magic=${emailMagic}" -F "to=${emailTo}" "${emailHost}/ReST/v1/email")
+#echo "${emailSent}"
 
 
 

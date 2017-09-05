@@ -2,10 +2,10 @@
     "include": [ "postgres" ],
     "exclude": [ ],
     "s3Bucket": false,
-    "s3PutScript": "/home/parminder/src/s3-tools/putS3.sh",
+    "s3PutScript": "/home/nigel/src/s3-tools/putS3.sh",
     "email": {
         "to": "nigel@stsoftware.com.au",
         "host": "https://app.titlepage.com",
-        "magic":"_magic=T5PP-YL91-87SW-RJF8-GHC1"
+        "magic":"T5PP-YL91-87SW-RJF8-GHC1"
     }
 }
