@@ -1,11 +1,17 @@
 {
     "include": [ "postgres" ],
     "exclude": [ ],
-    "s3Bucket": false,
-    "s3PutScript": "/home/parminder/src/s3-tools/putS3.sh",
+    "s3":{
+        "name":"st-dumps",        
+        "accessKeyID":"AK***********Q",
+        "secretAccessKey":"Xp*********************c75s",
+        "bucket": "bucket-name",
+        "host":"s3-ap-southeast-2.amazonaws.com"
+    },
+
     "email": {
-        "to": "nigel@stsoftware.com.au",
+        "to": "support@stsoftware.com.au",
         "host": "https://app.titlepage.com",
-        "magic":"_magic=T5PP-YL91-87SW-RJF8-GHC1"
+        "magic":"T5PP-****-****-****-GHC1"
     }
 }
