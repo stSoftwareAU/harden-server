@@ -1,0 +1,6 @@
+{
+    "include": [ ],
+    "exclude": [ ],
+    "s3Bucket": false,
+    "s3PutScript": "putS3.sh"
+}
