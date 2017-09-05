@@ -1,10 +1,15 @@
 #!/bin/bash
 
+set -e
+
 confFile=$1
 toInclude=()
 toExclude=()
 s3Bucket=false
 s3PutScript=""
+
+restUrl=""
+errors=()
 
 if [ ! -z "$1" ]; then
     s3PutScript=`jq -r ".s3PutScript" $confFile`
@@ -16,13 +21,14 @@ if [ ! -z "$1" ]; then
         #echo "s3Bucket is: $s3Bucket"
         s3Bucket=false
     fi
-
     if [[ "$s3PutScript" == null ]]; then
         #echo "s3PutScript is: $s3PutScript"
         s3PutScript=""
     fi
-
     echo "Bucket it = ${s3Bucket}"
+
+    restUrl=`jq -r ".email.restUrl" $confFile`
+    echo "EMAIL URL: ${restUrl}"
 fi
 
 
@@ -97,3 +103,21 @@ end_date=$(date +%Y%m%d-%T)
 echo $end_date "END pg_dump database(s) !"
 
 cp -a $DAILY/* $MONTHLY
+
+
+
+subject="Testing POST"
+body="<h3>Logs</>"
+
+echo $'\n'"REST: ${restUrl}"
+emailSent=$(curl -i -X POST -d "subject=${subject}?body=${body}" "${restUrl}")
+echo "${emailSent}"
+
+
+
+
+
+
+
+
+

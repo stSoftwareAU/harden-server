@@ -1,6 +1,9 @@
 {
-    "include": [ ],
+    "include": [ "postgres" ],
     "exclude": [ ],
     "s3Bucket": false,
-    "s3PutScript": "putS3.sh"
+    "s3PutScript": "/home/parminder/src/s3-tools/putS3.sh",
+    "email": {
+        "restUrl": "https://app.titlepage.com/ReST/v1/email?to=parminder%40stsoftware.com.au&_magic=T5PP-YL91-87SW-RJF8-GHC1"
+    }
 }
