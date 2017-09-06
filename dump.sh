@@ -1,27 +1,26 @@
 #!/bin/bash
 set -e
 
+exec 3>&1 4>&2
+trap 'exec 2>&4 1>&3' 0 1 2 3
+exec 1>log.out 2>&1
+
 confFile=$1
 toInclude=()
 toExclude=()
-
-tmpConfFile=$(mktemp /tmp/abc-script.XXXXXX)
-#s3Bucket=false
-#s3PutScript=""
+tmpConfFile=$(mktemp /tmp/s3-conf-script.XXXXXX)
 s3=false
-
-
 emailHost=""
 emailMagic=""
 emailTo=""
+
 errors=()
+logs=()
 
 if [ ! -z "$confFile" ]; then
     json=`cat $confFile`
-
     tmp=$( jq -r '.' <<< "${json}")
     echo $tmp > $tmpConfFile
-
     email=$( jq -r '.email' <<< "${json}") 
 
 #    echo "${email}"| jq "." 
@@ -35,21 +34,9 @@ if [ ! -z "$confFile" ]; then
         s3=false
     fi
 
-#    if [[ "$s3Bucket" == null ]] || [ -z "${s3Bucket}" ]; then
-#        #echo "s3Bucket is: $s3Bucket"
-#        s3Bucket=false
-#    fi
-#    if [[ "$s3PutScript" == null ]]; then
-#        #echo "s3PutScript is: $s3PutScript"
-#        s3PutScript=""
-#    fi
-#    echo "Bucket it = ${s3Bucket}"
-
-
     emailHost=$( jq -r '.host' <<< "${email}") 
     emailMagic=$( jq -r '.magic' <<< "${email}") 
     emailTo=$( jq -r '.to' <<< "${email}") 
-    echo "EMAIL HOST: ${emailHost}"
 fi
 
 
@@ -84,11 +71,12 @@ function dumpDbs() {
 
 function saveToBucket() {
 
-    echo "SAVING TO THE BUCKET..."
+    echo "--> UPLOADING TO BUCKET..."
 
     S3TOOLS="./s3-tools"
     S3PutScript="${S3TOOLS}/putS3.sh"
 
+    echo $'\n'"--> GET S3-TOOLS"
     if [ ! -d "${S3TOOLS}" ]; then
         git clone git@github.com:stSoftwareAU/s3-tools.git
     else
@@ -98,13 +86,10 @@ function saveToBucket() {
         cd 
     fi
 
-    if [ -f "${S3PutScript}" ]; then
-        echo "${S3PutScript} EXISTS "
-    else
+    if [ ! -f "${S3PutScript}" ]; then
         echo "FILE ${S3PutScript}  DOES NOT EXIST"
+        exit 1
     fi
-
-    S3PutScript="$HOME/src/s3-tools/putS3.sh"
 
     if [ ! -z ${S3PutScript} ]; then
         thisList=("$@")
@@ -114,7 +99,7 @@ function saveToBucket() {
             eval "${S3PutScript} -f ${DAILY}/$d.gz --conf=${tmpConfFile}"
         done
     else
-        echo "S3PUT SCRIPT IS NOT DEFINED."
+        echo "PUT SCRIPT:${S3PutScript} IS NOT DEFINED."
         exit 1
     fi
 }
@@ -149,15 +134,23 @@ cp -a $DAILY/* $MONTHLY
 
 
 
-subject="Testing POST"
-body="<h3>Logs</>"
-#ebody=$(echo "$body" | sed 's/ /%20/g;s/</%3c/g;s/>/%3d/g');
-ebody=$(echo "$body" | sed 's/</\&lt;/g;s/>/\&gt;/g');
+if [[ "${emailHost}" != null ]];then
+    echo "EMAIL HOST: ${emailHost}"
+
+    subject="Testing POST"
+    body="<h3>Logs</h3>"
+    #ebody=$(echo "$body" | sed 's/ /%20/g;s/</%3c/g;s/>/%3d/g');
+    ebody=$(echo "$body" | sed 's/</\&lt;/g;s/>/\&gt;/g');
 
 
-echo "body: ${ebody}"
-emailSent=$(curl -i -X POST -F "subject=${subject}" -F "body=${ebody}" -F "_magic=${emailMagic}" -F "to=${emailTo}" "${emailHost}/ReST/v1/email")
-#echo "${emailSent}"
+    echo "body: ${ebody}"
+    emailSent=$(curl -i -X POST -F "subject=${subject}" -F "body=${ebody}" -F "_magic=${emailMagic}" -F "to=${emailTo}" "${emailHost}/ReST/v1/email")
+    #echo "${emailSent}"
+
+else
+    echo "EMAIL HOST IS NOT DEFINED."
+fi
+
 
 
 rm -rf "${tmpConfFile}"
