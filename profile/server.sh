@@ -7,6 +7,7 @@ installPackages() {
   packagelist=(
     #"ssmtp"  email alerts
     "ffmpeg" # audio conversion
+    "jq" # Handles JSON
     "fail2ban" 
     "openssh-server" 
     "apache2"
