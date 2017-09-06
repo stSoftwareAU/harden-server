@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-exec 3>&1 4>&2
-trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>log.out 2>&1
+#exec 3>&1 4>&2
+#trap 'exec 2>&4 1>&3' 0 1 2 3
+#exec 1>log.out 2>&1
 
 confFile=$1
 toInclude=()
@@ -79,11 +79,11 @@ function saveToBucket() {
     echo $'\n'"--> GET S3-TOOLS"
     if [ ! -d "${S3TOOLS}" ]; then
         git clone git@github.com:stSoftwareAU/s3-tools.git
-    else
-        cd "${S3TOOLS}"
-        git fetch origin
-        git reset --hard origin/master
-        cd 
+ #   else
+#        cd "${S3TOOLS}"
+ #       git fetch origin
+ #       git reset --hard origin/master
+ #       cd 
     fi
 
     if [ ! -f "${S3PutScript}" ]; then
