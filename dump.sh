@@ -4,7 +4,7 @@ set -e
 #exec 3>&1 4>&2
 #trap 'exec 2>&4 1>&3' 0 1 2 3
 #exec 1>log.out 2>&1
-
+dumpExitValue=0
 confFile=$1
 toInclude=()
 toExclude=()
@@ -41,7 +41,8 @@ fi
 
 
 cd
-DAILY=dumps/`date +%a`
+today=`date +%a`
+DAILY="dumps/$today"
 mkdir -p $DAILY
 MONTHLY=dumps/`date +%b`
 mkdir -p $MONTHLY
@@ -59,48 +60,96 @@ do
 done
 
 function dumpDbs() {
+    emailBody=""
     thisList=("$@")
     for d in ${thisList[@]}
     do
         temp_date_s=$(date +%Y%m%d-%T)
         size=$(psql -h localhost -U postgres -tqc "SELECT pg_size_pretty(pg_database_size('$d'));")
-        echo "$temp_date_s Database: $d size: ${size//[[:space:]]}"
+        msg="$temp_date_s Database: $d size: ${size//[[:space:]]}"
+        echo $msg
+        
+        set +e
         pg_dump -h localhost -U postgres $d |gzip -c > $DAILY/$d.gz
+        RESULT=$?
+        set -e
+        if [ $RESULT -eq 0 ]; then
+            toname="$today/$d.gz"
+            sendToS3 $DAILY/$d.gz $toname
+            emailBody="$emailBody$msg\n"
+        else
+            sendEmail "FAILED TO DUMP: $d"
+            dumpExitValue=1
+        fi
     done
+    if [ $dumpExitValue -eq 0 ]; then
+       sendEmail "Successfully backed up databases" "$emailBody"
+    fi
 }
 
-function saveToBucket() {
+function sendEmail() {
+    subject=$1 
+    body=$2
 
-    echo "--> UPLOADING TO BUCKET..."
+    echo "$subject"
 
-    S3TOOLS="./s3-tools"
-    S3PutScript="${S3TOOLS}/putS3.sh"
+    if [[ "${emailHost}" != null ]];then
+#        echo "EMAIL HOST: ${emailHost}"
 
-    echo $'\n'"--> GET S3-TOOLS"
-    if [ ! -d "${S3TOOLS}" ]; then
-        git clone git@github.com:stSoftwareAU/s3-tools.git
- #   else
-#        cd "${S3TOOLS}"
- #       git fetch origin
- #       git reset --hard origin/master
- #       cd 
+#        subject="Testing POST"
+#        body="<h3>Logs</h3>"
+        #ebody=$(echo "$body" | sed 's/ /%20/g;s/</%3c/g;s/>/%3d/g');
+        ebody=$(echo "$body" | sed 's/</\&lt;/g;s/>/\&gt;/g');
+
+
+ #       echo "body: ${ebody}"
+        set +e
+        emailSent=$(curl --fail -i -X POST -F "subject=${subject}" -F "body=${ebody}" -F "_magic=${emailMagic}" -F "to=${emailTo}" "${emailHost}/ReST/v1/email")
+        #echo "${emailSent}"
+        RESULT=$?
+        set -e
+        if [ ! $RESULT -eq 0 ]; then
+            echo "$emailSent"
+            dumpExitValue=1
+        fi
+#    else
+#        echo "EMAIL HOST IS NOT DEFINED."
     fi
+}
 
-    if [ ! -f "${S3PutScript}" ]; then
-        echo "FILE ${S3PutScript}  DOES NOT EXIST"
-        exit 1
-    fi
+function sendToS3() {
+    file=$1
+    to=$2
+    if [ "${s3}" != false ]; then
+        echo "--> UPLOADING TO BUCKET..."
 
-    if [ ! -z ${S3PutScript} ]; then
-        thisList=("$@")
-        for d in ${thisList[@]}
-        do
-            echo $'\n'"--> UPLOADING FILE:${DAILY}/$d.gz TO AWS BUCKET."
-            eval "${S3PutScript} -f ${DAILY}/$d.gz --conf=${tmpConfFile}"
-        done
-    else
-        echo "PUT SCRIPT:${S3PutScript} IS NOT DEFINED."
-        exit 1
+        S3TOOLS="./s3-tools"
+        S3PutScript="${S3TOOLS}/putS3.sh"
+
+        #echo $'\n'"--> GET S3-TOOLS"
+        if [ ! -d "${S3TOOLS}" ]; then
+            git clone git@github.com:stSoftwareAU/s3-tools.git
+     #   else
+    #        cd "${S3TOOLS}"
+     #       git fetch origin
+     #       git reset --hard origin/master
+     #       cd 
+        fi
+
+        if [ ! -f "${S3PutScript}" ]; then
+            sendEmail "FILE ${S3PutScript}  DOES NOT EXIST"
+            dumpExitValue=1
+        fi
+
+        set +e
+        $S3PutScript --conf=${tmpConfFile} $file $to
+        RESULT=$?
+        set -e
+        if [ ! $RESULT -eq 0 ]; then
+            sendEmail "failed to send $file"
+            dumpExitValue=1
+        fi
+
     fi
 }
 
@@ -117,41 +166,20 @@ if [ ! -z "${toInclude}" ]; then
     done
 
     dumpDbs "${toInclude[@]}"
-    if [ "${s3}" != false ]; then
-        saveToBucket "${toInclude[@]}"
-    fi
+    
 else
     dumpDbs "${LIST[@]}"
-    if [ "${s3}" != false ] ; then
-        saveToBucket "${LIST[@]}"
-    fi
+    
 fi
-
-end_date=$(date +%Y%m%d-%T)
-echo $end_date "END pg_dump database(s) !"
 
 cp -a $DAILY/* $MONTHLY
 
-
-
-if [[ "${emailHost}" != null ]];then
-    echo "EMAIL HOST: ${emailHost}"
-
-    subject="Testing POST"
-    body="<h3>Logs</h3>"
-    #ebody=$(echo "$body" | sed 's/ /%20/g;s/</%3c/g;s/>/%3d/g');
-    ebody=$(echo "$body" | sed 's/</\&lt;/g;s/>/\&gt;/g');
-
-
-    echo "body: ${ebody}"
-    emailSent=$(curl -i -X POST -F "subject=${subject}" -F "body=${ebody}" -F "_magic=${emailMagic}" -F "to=${emailTo}" "${emailHost}/ReST/v1/email")
-    #echo "${emailSent}"
-
-else
-    echo "EMAIL HOST IS NOT DEFINED."
-fi
-
-
-
 rm -rf "${tmpConfFile}"
+
+
+if [ $dumpExitValue -eq 0 ]; then
+    end_date=$(date +%Y%m%d-%T)
+    echo $end_date "END pg_dump database(s) !"
+    exit $dumpExitValue
+fi
 
