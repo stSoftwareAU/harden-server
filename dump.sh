@@ -4,8 +4,12 @@ set -e
 confFile=$1
 toInclude=()
 toExclude=()
-s3Bucket=false
-s3PutScript=""
+
+tmpConfFile=$(mktemp /tmp/abc-script.XXXXXX)
+#s3Bucket=false
+#s3PutScript=""
+s3=false
+
 
 emailHost=""
 emailMagic=""
@@ -14,23 +18,33 @@ errors=()
 
 if [ ! -z "$confFile" ]; then
     json=`cat $confFile`
+
+    tmp=$( jq -r '.' <<< "${json}")
+    echo $tmp > $tmpConfFile
+
     email=$( jq -r '.email' <<< "${json}") 
 
 #    echo "${email}"| jq "." 
-    s3PutScript=`jq -r ".s3PutScript" $confFile`
-    s3Bucket=`jq -r ".s3Bucket" $confFile`
+#    is3PutScript=`jq -r ".s3PutScript" $confFile`
+#    s3Bucket=`jq -r ".s3Bucket" $confFile`
     toInclude=(`jq -r ".include[]?" $confFile`)
     toExclude=(`jq -r ".exclude[]?" $confFile`)
 
-    if [[ "$s3Bucket" == null ]] || [ -z "${s3Bucket}" ]; then
-        #echo "s3Bucket is: $s3Bucket"
-        s3Bucket=false
+    s3=$( jq -r '.s3' <<< "${json}" )
+    if [[ "${s3}" == null ]]; then
+        s3=false
     fi
-    if [[ "$s3PutScript" == null ]]; then
-        #echo "s3PutScript is: $s3PutScript"
-        s3PutScript=""
-    fi
-    echo "Bucket it = ${s3Bucket}"
+
+#    if [[ "$s3Bucket" == null ]] || [ -z "${s3Bucket}" ]; then
+#        #echo "s3Bucket is: $s3Bucket"
+#        s3Bucket=false
+#    fi
+#    if [[ "$s3PutScript" == null ]]; then
+#        #echo "s3PutScript is: $s3PutScript"
+#        s3PutScript=""
+#    fi
+#    echo "Bucket it = ${s3Bucket}"
+
 
     emailHost=$( jq -r '.host' <<< "${email}") 
     emailMagic=$( jq -r '.magic' <<< "${email}") 
@@ -70,12 +84,34 @@ function dumpDbs() {
 
 function saveToBucket() {
 
-    if [ ! -z ${s3PutScript} ]; then
+    echo "SAVING TO THE BUCKET..."
+
+    S3TOOLS="./s3-tools"
+    S3PutScript="${S3TOOLS}/putS3.sh"
+
+    if [ ! -d "${S3TOOLS}" ]; then
+        git clone git@github.com:stSoftwareAU/s3-tools.git
+    else
+        cd "${S3TOOLS}"
+        git fetch origin
+        git reset --hard origin/master
+        cd 
+    fi
+
+    if [ -f "${S3PutScript}" ]; then
+        echo "${S3PutScript} EXISTS "
+    else
+        echo "FILE ${S3PutScript}  DOES NOT EXIST"
+    fi
+
+    S3PutScript="$HOME/src/s3-tools/putS3.sh"
+
+    if [ ! -z ${S3PutScript} ]; then
         thisList=("$@")
         for d in ${thisList[@]}
         do
             echo $'\n'"--> UPLOADING FILE:${DAILY}/$d.gz TO AWS BUCKET."
-            eval "${s3PutScript} ${DAILY}/$d.gz"
+            eval "${S3PutScript} -f ${DAILY}/$d.gz --conf=${tmpConfFile}"
         done
     else
         echo "S3PUT SCRIPT IS NOT DEFINED."
@@ -96,12 +132,12 @@ if [ ! -z "${toInclude}" ]; then
     done
 
     dumpDbs "${toInclude[@]}"
-    if [ "${s3Bucket}" = true ]; then
+    if [ "${s3}" != false ]; then
         saveToBucket "${toInclude[@]}"
     fi
 else
     dumpDbs "${LIST[@]}"
-    if [ "${s3Bucket}" = true ] ; then
+    if [ "${s3}" != false ] ; then
         saveToBucket "${LIST[@]}"
     fi
 fi
@@ -124,10 +160,5 @@ emailSent=$(curl -i -X POST -F "subject=${subject}" -F "body=${ebody}" -F "_magi
 #echo "${emailSent}"
 
 
-
-
-
-
-
-
+rm -rf "${tmpConfFile}"
 
