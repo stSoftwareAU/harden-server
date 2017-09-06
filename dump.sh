@@ -121,19 +121,12 @@ function sendToS3() {
     file=$1
     to=$2
     if [ "${s3}" != false ]; then
-        echo "--> UPLOADING TO BUCKET..."
 
         S3TOOLS="./s3-tools"
         S3PutScript="${S3TOOLS}/putS3.sh"
 
-        #echo $'\n'"--> GET S3-TOOLS"
         if [ ! -d "${S3TOOLS}" ]; then
-            git clone git@github.com:stSoftwareAU/s3-tools.git
-     #   else
-    #        cd "${S3TOOLS}"
-     #       git fetch origin
-     #       git reset --hard origin/master
-     #       cd 
+            git clone https://github.com/stSoftwareAU/s3-tools.git
         fi
 
         if [ ! -f "${S3PutScript}" ]; then
