@@ -69,6 +69,7 @@ installPackages() {
   packagelist=(
     "phantomjs"
     "jq"
+    "awscli"
 #    "postfix"
 #    "mailutils"
 #    "logwatch"    
