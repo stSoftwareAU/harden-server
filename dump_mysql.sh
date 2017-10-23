@@ -78,7 +78,7 @@ function dumpDbs() {
         echo $msg
         
         set +e
-        mysqldump --defaults-group-suffix=$server $database | gzip -9 > $DAILY/$d.mysql.dump.sql.gz
+        mysqldump --defaults-group-suffix=$server $d | gzip -9 > $DAILY/$d.mysql.dump.sql.gz
         RESULT=$?
         set -e
         if [ $RESULT -eq 0 ]; then
@@ -87,7 +87,7 @@ function dumpDbs() {
             sendToS3 $DAILY/$d.mysql.dump.sql.gz $toname
             emailBody="$emailBody$msg\n"
             ms=`date +%s000`
-            mysql --defaults-group-suffix=$server $d -Nse "UPDATE aspc_virtualdb SET backup_ms=$ms WHERE name='$d'"
+            mysql --defaults-group-suffix=$server aspc_master -Nse "UPDATE aspc_virtualdb SET backup_ms=$ms WHERE name='$d'"
         else
             sendEmail "FAILED TO DUMP: $d"
             dumpExitValue=1
