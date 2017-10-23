@@ -86,6 +86,8 @@ function dumpDbs() {
             echo "sendToS3 $DAILY/$d.mysql.dump.sql.gz $toname"
             sendToS3 $DAILY/$d.mysql.dump.sql.gz $toname
             emailBody="$emailBody$msg\n"
+            ms=`date +%s000`
+            mysql --defaults-group-suffix=$server $d -Nse "UPDATE aspc_virtualdb SET backup_ms=$ms WHERE name='$d'"
         else
             sendEmail "FAILED TO DUMP: $d"
             dumpExitValue=1
