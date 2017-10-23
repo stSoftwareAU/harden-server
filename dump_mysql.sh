@@ -160,7 +160,7 @@ if [ ! -z "${toInclude}" ]; then
     # exclude non existing databases from toInclude()
     for d in ${toInclude[@]}
     do    
-        dbExists=$(mysql --defaults-group-suffix=dbid -Nse "SELECT schema_name FROM information_schema.schemata WHERE schema_name='$d';")
+        dbExists=$(mysql --defaults-group-suffix=$server -Nse "SELECT schema_name FROM information_schema.schemata WHERE schema_name='$d';")
         if [ -z "${dbExists}" ]; then
             echo "DB -> $d DOES NOT EXISTS." 
             toInclude=("${toInclude[@]/$d}")
