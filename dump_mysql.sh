@@ -83,8 +83,8 @@ function dumpDbs() {
         set -e
         if [ $RESULT -eq 0 ]; then
             toname="$today/$d.mysql.dump.sql.gz"
-            #sendToS3 $DAILY/$d.mysql.dump.sql.gz $toname
             echo "sendToS3 $DAILY/$d.mysql.dump.sql.gz $toname"
+            sendToS3 $DAILY/$d.mysql.dump.sql.gz $toname
             emailBody="$emailBody$msg\n"
         else
             sendEmail "FAILED TO DUMP: $d"
