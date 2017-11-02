@@ -68,6 +68,7 @@ installPackages() {
   ## list of packages
   packagelist=(
     "phantomjs"
+    "curl"
     "jq"
     "awscli"
 #    "postfix"
