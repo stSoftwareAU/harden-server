@@ -8,6 +8,7 @@ installPackages() {
     #"ssmtp"  email alerts
     "ffmpeg" # audio conversion
     "jq" # Handles JSON
+    "awscli"
     "fail2ban" 
     "openssh-server" 
     "apache2"
