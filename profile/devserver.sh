@@ -23,12 +23,12 @@ defaults() {
   hosts="/etc/hosts"
   if ! grep -q -e "devserver7" "$hosts"; then
       cp $hosts /tmp/hosts
-      echo "192.168.7.48	devserver7" >> /tmp/hosts
+      echo "192.168.1.48	devserver7" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
   fi
   if ! grep -q -e "devserver8" "$hosts"; then
       cp $hosts /tmp/hosts
-      echo "192.168.7.58	devserver8" >> /tmp/hosts
+      echo "192.168.1.58	devserver8" >> /tmp/hosts
       echo "#60.241.239.222	devserver8" >> /tmp/hosts
       echo "#58.108.224.217	devserver8" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
@@ -36,18 +36,18 @@ defaults() {
 
   if ! grep -q -e "devserver9" "$hosts"; then
       cp $hosts /tmp/hosts
-      echo "192.168.7.59	devserver9" >> /tmp/hosts
+      echo "192.168.1.59	devserver9" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
   fi
 
   if ! grep -q -e "selenium1" "$hosts"; then
       cp $hosts /tmp/hosts
-      echo "192.168.7.108	selenium1" >> /tmp/hosts
+      echo "192.168.1.90	selenium1" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
   fi
   if ! grep -q -e "selenium2" "$hosts"; then
       cp $hosts /tmp/hosts
-      echo "192.168.7.91	selenium2" >> /tmp/hosts
+      echo "192.168.1.91	selenium2" >> /tmp/hosts
       sudo cp /tmp/hosts $hosts
   fi
 }
