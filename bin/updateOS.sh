@@ -5,7 +5,7 @@ set -e
 dpkg -l linux-* | awk '/^ii/{ print $2}' | grep -v -e `uname -r | cut -f1,2 -d"-"` | grep -e [0-9] | grep -E "(image|headers)" | xargs sudo apt-get -y purge
 
 sudo apt-get update
-sudo apt-get upgrade -y
+sudo apt-get upgrade --allow-unauthenticated -y
 sudo apt-get autoclean
 sudo apt-get dist-upgrade
 sudo apt-get check
