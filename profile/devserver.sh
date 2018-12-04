@@ -222,6 +222,14 @@ jenkins(){
 
         sudo /etc/init.d/jenkins restart
     fi
+
+
+    if [ $(getent group docker) ]; then
+        echo "docker group exists."
+    else
+        sudo groupadd docker
+    fi
+    sudo usermod -aG docker jenkins
 }
 
 configPHP() {
